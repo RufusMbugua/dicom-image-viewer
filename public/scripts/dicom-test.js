@@ -1,7 +1,7 @@
 $(document).ready(function() {
-  var image = 'wadouri:http://rufusmbugua.com:8043/instances/c57826c4-96564973-aaa011e3-59707ad7-23fcd28e';
+  var image = 'wadouri:http://rufusmbugua.com:8043/instances/3ab1634c-fc3309d0-3f7add48-08583c7b-24c62bb6';
 
-  
+
   var element = document.getElementById('dicomImage')
 
   var dialog = document.querySelector('dialog');
