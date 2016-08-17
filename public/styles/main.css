@@ -1,0 +1,50 @@
+.chart{
+  padding:20px;
+}
+.chart .inner{
+  height:300px;
+  border:1px solid #ddd;
+  background:white;
+}
+.full-screen{
+  height:500px;
+}
+.action{
+  width:100%;
+}
+.annotationDialog, .relabelDialog {
+  z-index: 1000;
+  position: absolute;
+  margin: 0px;
+  left: 40%;
+  top: 40%;
+  width: 300px;
+  border: 1px black solid;
+  border-radius: 5px;
+}
+.annotationTextInputOptions {
+  padding: 5px 0px;
+}
+.annotationTextInput {
+  margin-left: 5px;
+}
+.annotationDialogConfirm {
+  float: right;
+}
+.action{
+  background: #C9282E;
+  border:1px solid #C9282E;
+}
+.action .btn{
+  border-radius:0;
+    margin:auto;
+}
+.buttons{
+  width:50%;
+  margin:auto;
+}
+.btn.active,.btn:hover{
+  background: #e5e5e5 !important;
+  color:#000 !important;
+  border-color:#e5e5e5 !important;
+}

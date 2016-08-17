@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title= title
+    link(rel="stylesheet",href="assets/font-awesome/css/font-awesome.css")
+    link(rel="stylesheet",href="https://cdn.rawgit.com/doximity/vital/master/releases/v1.1.0/stylesheets/vital.min.css",media="screen",title="no title",charset="utf-8")
+    link(rel="stylesheet",href="assets/ionicons/css/ionicons.css")
+    link(rel="stylesheet",href="assets/dialog-polyfill/dialog-polyfill.css")
+    link(rel="stylesheet",href="assets/main.css")
+  body
+    include header
+    block content
+    script(type="text/javascript",src="assets/jquery/dist/jquery.js")
+    script(type="text/javascript",src="assets/cornerstone/dist/cornerstone.js")
+    script(type="text/javascript",src="assets/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoader.js")
+    script(type="text/javascript",src="assets/dicomParser/dist/dicomParser.js")
+    script(type="text/javascript",src="assets/image-jpeg2000/dist/jpx.js")
+    script(type="text/javascript",src="assets/react/react.js")
+    script(type="text/javascript",src="assets/react/react-dom.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js")
+    script(type="text/javascript",src="assets/cornerstoneMath/dist/cornerstoneMath.js")
+    script(type="text/javascript",src="assets/cornerstoneTools/dist/cornerstoneTools.js") 
+    script(type="text/javascript",src="assets/hammerjs/hammer.js")
+    
+    //- Dialog-Polyfill
+    script(type="text/javascript",src="assets/dialog-polyfill/dialog-polyfill.js")
+    
+    //- React Components
+    script(type="text/javascript",src="assets/bundle.js")
+    script(type="text/javascript",src="assets/dicom-test.js")
+    script(type="text/javascript",src="assets/setupButtons.js")
+    script(type="text/javascript",src="assets/setupViewport.js")

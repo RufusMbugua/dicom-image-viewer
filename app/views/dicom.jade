@@ -1,0 +1,56 @@
+extends layouts/main
+
+block content
+  .autogrid
+   .col.chart
+    .inner(style="height:450px")
+     .action
+      .buttons
+       a.btn.small.solid.red#invert(title="Invert") #[i.fa.fa-adjust]
+       a.btn.small.solid.red#rotate(title="Rotate") #[i.ion-arrow-return-right]
+       a.btn.small.solid.red#zoom(title="Zoom") #[i.fa.fa-search]
+       a.btn.small.solid.red#magnify(title="Magnify") #[i.fa.fa-search-plus]
+       a.btn.small.solid.red#length(title="Length") #[i.fa.fa-arrows-h]
+       a.btn.small.solid.red#annotate(title="Annotate") #[i.fa.fa-commenting]
+       a.btn.small.solid.red#angle(title="Angle") #[i.fa.fa-pencil-square-o]
+       a.btn.small.solid.red#highlight(title="Highlight") #[i.ion-edit]
+       a.btn.small.solid.red#dragProbe(title="Drag & Probe") #[i.fa.fa-hand-paper-o]
+       a.btn.small.solid.red#freehand(title="Freehand") #[i.fa.fa-hand-lizard-o]
+       a.btn.small.solid.red#play(title="Play") #[i.ion-play]
+       a.btn.small.solid.red#stop(title="Stop") #[i.ion-stop]
+       a.btn.small.solid.red#save(title="Save") #[i.fa.fa-hdd-o]
+     #dicomImage(style="height:400px")
+     
+     dialog.annotationDialog
+      h5 Enter your annotation
+      .annotationTextInputOptions
+       label(for="annotationTextInput") New label
+        input.annotationTextInput(name="annotationTextInput",type="text")
+       a.annotationDialogConfirm.btn.small.blue OK
+              
+      dialog.relabelDialog(oncontextmenu="return false")
+       h5 Edit your annotation
+      .annotationTextInputOptions
+       label(for="annotationTextInput") New label
+        input.annotationTextInput(name="annotationTextInput",type="text")
+       a.relabelRemove.btn.small.solid.red Remove marker
+       a.relabelConfirm.btn.small.blue OK
+       
+  .autogrid
+    .col
+      .inner(style="padding:0 20px")
+       label(for="filename") Save as:
+       input#filename(type="text",value="cornerstone.png")
+    .col
+      .inner
+       .col-1-2
+         label(for="magLevelRange") Magnification Level
+         input(id="magLevelRange",type="range",min="1",value="2",max="10")
+       .col-1-2
+         label(for="magSizeRange") Magnifying glass size
+         input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
+       
+       
+     
+     
+    
