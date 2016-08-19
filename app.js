@@ -35,9 +35,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var routes = require('./app/controllers/index');
+var orthanc = require('./app/controllers/orthanc');
 
 //Routes are created here
 app.use('/', routes);
+app.use('/orthanc', orthanc);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
