@@ -24,7 +24,10 @@
     "Ionicons": "ionicons#^2.0.1",
     "requirejs": "^2.2.0",
     "cornerstoneTools": "^0.7.9",
-    "dialog-polyfill": "^0.4.4"
+    "dialog-polyfill": "^0.4.4",
+    "angularAudioRecorder": "^1.4.1",
+    "angular": "^1.5.8",
+    "angular-ui-router": "^0.3.1"
   },
   "resolutions": {
     "jquery": "~2.2.0"
