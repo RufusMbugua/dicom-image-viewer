@@ -6,7 +6,7 @@ var orthanc = 'http://orthanc.rufusmbugua.com/';
 
 
 var patient = [];
-var patientsData=[];
+
 /* GET home page. */
 router.get('/patients', function(req, res, next) {
 
@@ -16,6 +16,7 @@ router.get('/patients', function(req, res, next) {
     patients = JSON.parse(data);
   })
   .on('end',function(){
+    var patientsData=[];
     for (i = 0; i < patients.length; i++) {
       patientId = patients[i];
       request(orthanc + 'patients/' + patientId)
