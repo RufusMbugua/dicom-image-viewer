@@ -7,7 +7,7 @@ html
     link(rel="stylesheet",href="assets/ionicons/css/ionicons.css")
     link(rel="stylesheet",href="assets/dialog-polyfill/dialog-polyfill.css")
     link(rel="stylesheet",href="assets/main.css")
-  body
+  body(ng-app="div")
     include header
     block content
     script(type="text/javascript",src="assets/jquery/dist/jquery.js")
@@ -15,19 +15,28 @@ html
     script(type="text/javascript",src="assets/cornerstoneWADOImageLoader/dist/cornerstoneWADOImageLoader.js")
     script(type="text/javascript",src="assets/dicomParser/dist/dicomParser.js")
     script(type="text/javascript",src="assets/image-jpeg2000/dist/jpx.js")
-    script(type="text/javascript",src="assets/react/react.js")
-    script(type="text/javascript",src="assets/react/react-dom.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js")
     script(type="text/javascript",src="assets/cornerstoneMath/dist/cornerstoneMath.js")
     script(type="text/javascript",src="assets/cornerstoneTools/dist/cornerstoneTools.js") 
     script(type="text/javascript",src="assets/hammerjs/hammer.js")
+    script(type="text/javascript",src="assets/angular/angular.js")
+    script(type="text/javascript",src="assets/angularAudioRecorder/dist/angular-audio-recorder.js")
+    script(type="text/javascript",src="assets/angular-ui-router/release/angular-ui-router.js")
     
     //- Dialog-Polyfill
     script(type="text/javascript",src="assets/dialog-polyfill/dialog-polyfill.js")
     
-    //- React Components
-    script(type="text/javascript",src="assets/bundle.js")
-    script(type="text/javascript",src="assets/dicom-test.js")
+    //- Angular
+    script(type="text/javascript",src="app/app.js")
+    script(type="text/javascript",src="app/ng-controllers/audio.js")
+    script(type="text/javascript",src="app/ng-controllers/patients.js")
+    
+    script(type="text/javascript",src="app/ng-services/filter.js")
+    script(type="text/javascript",src="app/ng-services/chart.js")
+    script(type="text/javascript",src="app/ng-services/error.js")
+    script(type="text/javascript",src="app/ng-services/request.js")
+    
+    //- Cornerstone
     script(type="text/javascript",src="assets/setupButtons.js")
     script(type="text/javascript",src="assets/setupViewport.js")
