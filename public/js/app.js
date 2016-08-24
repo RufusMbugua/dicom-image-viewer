@@ -108,7 +108,7 @@ angular.module("div").directive('isActiveLink', ['$location', function(
  * @param $urlRouterProvider {service}
  */
  angular.module("div").config(function($stateProvider, $urlRouterProvider) {
-   $urlRouterProvider.otherwise("/login");
+   $urlRouterProvider.otherwise("/admin/dashboard");
  });
 
 angular.module('div').factory('ArrayHelper', function() {
@@ -336,6 +336,39 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
   return Requests;
 }])
 
+angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+  }
+])
+
+angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin', {
+    url: '/admin',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('admin/admin.main')
+      },
+      'admin.header@admin':{
+        templateUrl: VIEW._modules('admin/admin.header')
+      },
+      'admin.sidebar@admin':{
+        templateUrl: VIEW._modules('admin/admin.sidebar')
+      }
+    }
+  }).
+  state('admin.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        controller: 'adminCtrl',
+        templateUrl: VIEW._modules('admin/admin.dashboard')
+      }
+    }
+  })
+});
+
 angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
   '$state',
   function(scope, Requests, state) {
@@ -400,39 +433,6 @@ angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvi
     views: {
       '': {
         templateUrl: VIEW._modules('patients/patients.dashboard')
-      }
-    }
-  })
-});
-
-angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-  }
-])
-
-angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin', {
-    url: '/admin',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('admin/admin.main')
-      },
-      'admin.header@admin':{
-        templateUrl: VIEW._modules('admin/admin.header')
-      },
-      'admin.sidebar@admin':{
-        templateUrl: VIEW._modules('admin/admin.sidebar')
-      }
-    }
-  }).
-  state('admin.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        controller: 'adminCtrl',
-        templateUrl: VIEW._modules('admin/admin.dashboard')
       }
     }
   })
