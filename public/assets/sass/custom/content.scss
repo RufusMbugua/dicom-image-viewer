@@ -11,6 +11,9 @@ html,body{
       > div.row{
         height:100%;
         overflow-y:hidden;
+        > .main{
+          overflow-y:auto;
+        }
       }
     }
   }

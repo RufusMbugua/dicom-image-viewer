@@ -5545,7 +5545,7 @@ a {
 
 /* Cards */
 .card-sm {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 120px !important;
@@ -5582,7 +5582,7 @@ a:hover {
     border: 1px solid #2C3E50; }
 
 .card-md {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 300px !important;
@@ -5614,7 +5614,7 @@ a:hover {
     margin-bottom: 10px; }
 
 .card-lg {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 500px !important;
@@ -6436,6 +6436,8 @@ html, body {
       html > div > div > div.row, .content.main html > div > div > div.form-group, form html > div > div > div.form-group, body > div > div > div.row, .content.main body > div > div > div.form-group, form body > div > div > div.form-group {
         height: 100%;
         overflow-y: hidden; }
+        html > div > div > div.row > .main, .content.main html > div > div > div.form-group > .main, form html > div > div > div.form-group > .main, body > div > div > div.row > .main, .content.main body > div > div > div.form-group > .main, form body > div > div > div.form-group > .main {
+          overflow-y: auto; }
 
 div#main {
   background: whitesmoke; }
@@ -6618,6 +6620,7 @@ p.null-message {
   height: 100%; }
 
 table {
+  margin-bottom: 0 !important;
   background: white; }
   table .btn {
     margin-bottom: 0 !important; }
