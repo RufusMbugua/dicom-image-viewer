@@ -205,7 +205,7 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
   var Requests = {};
   Requests.data = [];
   Requests.post_data = []
-  var base_url = "api/";
+  var base_url = "";
   var url = null;
 
   /**
@@ -375,10 +375,10 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
     scope.user = {};
 
     scope.filterOptions = ['Date', 'Tags'];
+    get();
     function get() {
       var payload = {};
       Requests.get('orthanc/patients', payload, function(data) {
-        console.log(data)
         scope.patients = data;
       });
     }
@@ -433,6 +433,9 @@ angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvi
     views: {
       '': {
         templateUrl: VIEW._modules('patients/patients.dashboard')
+      },
+      'patients.list@admin.patients.dashboard':{
+        templateUrl: VIEW._modules('patients/patients.list')
       }
     }
   })

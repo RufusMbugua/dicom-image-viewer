@@ -3,7 +3,7 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
   var Requests = {};
   Requests.data = [];
   Requests.post_data = []
-  var base_url = "api/";
+  var base_url = "";
   var url = null;
 
   /**

@@ -14,6 +14,9 @@ angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvi
     views: {
       '': {
         templateUrl: VIEW._modules('patients/patients.dashboard')
+      },
+      'patients.list@admin.patients.dashboard':{
+        templateUrl: VIEW._modules('patients/patients.list')
       }
     }
   })

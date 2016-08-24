@@ -1,8 +1,9 @@
 table{
+  @extend .table;
   background:white;
-  border:1px solid $silver;
   .btn{
     @extend .btn-sm;
+    margin-bottom:0 !important;
   }
   tfoot{
     th{

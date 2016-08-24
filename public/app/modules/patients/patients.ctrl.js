@@ -4,10 +4,10 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
     scope.user = {};
 
     scope.filterOptions = ['Date', 'Tags'];
+    get();
     function get() {
       var payload = {};
       Requests.get('orthanc/patients', payload, function(data) {
-        console.log(data)
         scope.patients = data;
       });
     }
