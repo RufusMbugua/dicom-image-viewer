@@ -1,59 +1,64 @@
+/**
+ * Declarations
+ */
+// Packages
 var express = require('express');
 var router = express.Router();
 var request = require('request');
-var async =  require('async');
+var async = require('async');
 
+// Variables
 var orthanc = 'http://orthanc.rufusmbugua.com/';
-
-
-var patient = [];
 var patients = [];
-var patientData=[];
-var complete=false;
-/* GET home page. */
-router.get('/patients', function(req, res, next) {
 
-  async.series([
+/* GET Patients List */
+router.get('/patients', function(req, res, next) {
+  async.waterfall([
     get_patients,
-    iterate_over_patients,
-    // return_patients
-  ], function (err, results) {
-    console.log(results)
+    get_patient,
+  ],
+  function (err, result) {
+    patients = result;
+    res.json(result)
   });
-
-
-
 });
 
-router.get('/dicom', function(req, res, next) {
-
-});
-
-router.get('/patients', function(req, res, next) {
-
-});
-
-function get_patients(callback){
+/**
+* [get_patients description]
+* @param  {[type]} waterfallCallback [description]
+* @return {[type]}                   [description]
+*/
+function get_patients(waterfallCallback){
   request(orthanc + 'patients')
   .on('data',function(data){
-    patients = JSON.parse(data)
-  });
+    patients = JSON.parse(data);
+  })
+  .on('end',function(){
+    waterfallCallback(null,patients)
+  })
 }
-function iterate_over_patients(callback){
-  for(i=0;i<patients.length;i++){
-    patient = patients[i];
-    get_patient()
-  }
-}
-function get_patient(){
-  request(orthanc + 'patients/'+patient)
-  .on('data',function(data){
-    patientData.push(JSON.parse(data))
-    console.log(JSON.parse(data))
+
+/**
+* [get_patient description]
+* @param  {[type]} patients [description]
+* @return {[type]}          [description]
+*/
+function get_patient(patients,callback){
+
+  async.map(patients, function(patientId, callback) {
+    request(orthanc + 'patients/' + patientId,function(err, response, body){
+      if (err) {
+        return callback(err);
+      }
+      callback(null, JSON.parse(body));
+    })
+  }, function(err, extended) {
+    if (err) {
+      // handle error
+    }
+    // extended is an array containing the parsed JSON
+    callback(null,extended)
   });
 }
 
-function return_patients(callback){
-  callback(null,patientData)
-}
 module.exports = router;
