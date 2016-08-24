@@ -10,10 +10,12 @@ var assets = require('connect-assets');
 
 app.use(assets({
   paths: [
-    'bower_components',
-    'public/app',
-    'public/styles',
-    'public/scripts'
+    'public/libs/js',
+    'public/libs/css',
+    'public/js',
+    'public/css',
+    'public/scripts',
+    'public/assets/images'
   ]
 }));
 
@@ -26,6 +28,14 @@ app.set('jwtTokenSecret', 'secret_string_00');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+app.all('*', function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -35,9 +45,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var routes = require('./app/controllers/index');
+var orthanc = require('./app/controllers/orthanc');
 
 //Routes are created here
 app.use('/', routes);
+app.use('/orthanc', orthanc);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -69,13 +81,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-var fs = require("fs");
-var browserify = require("browserify");
-browserify("./public/app/charts/line.js")
-  .transform("babelify", {presets: ["es2015", "react"]})
-  .bundle()
-  .pipe(fs.createWriteStream("./public/scripts/bundle.js"));
-
 
 module.exports = app;
