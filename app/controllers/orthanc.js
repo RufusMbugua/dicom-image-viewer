@@ -1,38 +1,27 @@
 var express = require('express');
 var router = express.Router();
 var request = require('request');
+var async =  require('async');
 
 var orthanc = 'http://orthanc.rufusmbugua.com/';
 
 
 var patient = [];
-
+var patients = [];
+var patientData=[];
+var complete=false;
 /* GET home page. */
 router.get('/patients', function(req, res, next) {
 
-  var patient;
-  request(orthanc + 'patients')
-  .on('data',function(data){
-    patients = JSON.parse(data);
-  })
-  .on('end',function(){
-    var patientsData=[];
-    for (i = 0; i < patients.length; i++) {
-      patientId = patients[i];
-      request(orthanc + 'patients/' + patientId)
-      .on('data',function(data){
-        patient = JSON.parse(data);
-      })
-      .on('end',function(){
-        patientsData.push(patient)
-        if(patientsData.length==patients.length){
-          res.json(patientsData)
-        }
-      })
+  async.series([
+    get_patients,
+    iterate_over_patients,
+    // return_patients
+  ], function (err, results) {
+    console.log(results)
+  });
 
-    }
 
-  })
 
 });
 
@@ -44,26 +33,27 @@ router.get('/patients', function(req, res, next) {
 
 });
 
-function format_patient_data(patientArray) {
-  patientArray = JSON.parse(patientArray)
-  return patientArray;
-
-  for (i = 0; i < patientArray.length; i++) {
-    patientId = patientArray[i];
-    patient = get_patient(patientId);
-    // patients.push(patient)
-  }
-  // return patients;
-}
-
-function get_patients(){
-
-}
-function get_patient(patientId){
-  request(orthanc + 'patients/' + patientId)
+function get_patients(callback){
+  request(orthanc + 'patients')
   .on('data',function(data){
-    patient
-  })
+    patients = JSON.parse(data)
+  });
+}
+function iterate_over_patients(callback){
+  for(i=0;i<patients.length;i++){
+    patient = patients[i];
+    get_patient()
+  }
+}
+function get_patient(){
+  request(orthanc + 'patients/'+patient)
+  .on('data',function(data){
+    patientData.push(JSON.parse(data))
+    console.log(JSON.parse(data))
+  });
 }
 
+function return_patients(callback){
+  callback(null,patientData)
+}
 module.exports = router;

@@ -10,10 +10,12 @@ var assets = require('connect-assets');
 
 app.use(assets({
   paths: [
-    'bower_components',
-    'public/app',
-    'public/styles',
-    'public/scripts'
+    'public/libs/js',
+    'public/libs/css',
+    'public/js',
+    'public/css',
+    'public/scripts',
+    'public/assets/images'
   ]
 }));
 
@@ -79,13 +81,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-var fs = require("fs");
-var browserify = require("browserify");
-browserify("./public/app/charts/line.js")
-  .transform("babelify", {presets: ["es2015", "react"]})
-  .bundle()
-  .pipe(fs.createWriteStream("./public/scripts/bundle.js"));
-
 
 module.exports = app;
