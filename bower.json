@@ -47,7 +47,8 @@
     "tg-angular-validator": "~1.2.8",
     "ink": "~1.0.5",
     "angular-socket-io": "~0.7.0",
-    "angular-loading-bar": "~0.8.0"
+    "angular-loading-bar": "~0.8.0",
+    "angular-filter": "^0.5.11"
   },
   "resolutions": {
     "jquery": "~2.2.0",

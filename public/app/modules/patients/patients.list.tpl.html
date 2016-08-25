@@ -2,7 +2,7 @@
   <table>
     <thead>
       <tr>
-        <th ng-repeat="(k,v) in patients[0]" st-sort="k" ng-if="k!='createdAt' && k!='id' && k!='created_at' && k!='series_list' ">
+        <th ng-repeat="(k,v) in patients[0]" ng-if="k!='createdAt' && k!='id' && k!='created_at' && k!='series_list' ">
           <span ng-bind="k.toUpperCase().replace('_',' ')"></span>
         </th>
         <th>

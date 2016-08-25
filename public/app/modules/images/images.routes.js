@@ -4,6 +4,7 @@ angular.module('retsu.images').config(function($stateProvider, $urlRouterProvide
     url: '/images',
     views: {
       '': {
+        controller:'imagesCtrl',
         templateUrl: VIEW._modules('images/images.main')
       },
       'dicomImage@admin.images':{

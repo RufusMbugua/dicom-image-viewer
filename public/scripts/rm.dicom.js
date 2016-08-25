@@ -6,8 +6,16 @@
 * @param  {[type]} image   [description]
 * @return {[type]}         [description]
 */
-$.loadImage =   function (image){
-  var element = document.getElementById(image);
+
+$.loadImage = function(element,image){
+  cornerstone.enable(element);
+  cornerstone.enable(element);
+  cornerstone.loadImage('wadouri:http://orthanc.rufusmbugua.com/instances/'+image+'/file').then(function(image) {
+    cornerstone.displayImage(element, image);
+  });
+}
+
+$.loadViewPort =   function (element,image){
   var magLevelRange = $("#magLevelRange")
   magLevelRange.on("change", function() {
     var config = cornerstoneTools.magnify.getConfiguration();

@@ -6639,7 +6639,8 @@ p.null-message {
   .dicomList li:hover {
     background: #f0b67f; }
   .dicomList li a {
-    padding: 0 !important; }
+    padding: 0 !important;
+    height: 200px; }
     .dicomList li a:hover {
       background: transparent; }
 

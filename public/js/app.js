@@ -29,7 +29,8 @@ angular.module("div", [
   'retsu.admin',
   'retsu.users',
   'retsu.patients',
-  'retsu.images'
+  'retsu.images',
+  'angular.filter'
 ]);
 
 
@@ -202,6 +203,26 @@ angular.module("div").config(['$httpProvider', function(httpProvider) {
   httpProvider.interceptors.push('errorInterceptor');
 }]);
 
+angular.module('div').factory('rmFilter', ['$rootScope', '$filter', function(rootScope, filter) {
+  var rmFilter = {};
+  // Group By Filter
+  rmFilter.groupBy = filter('groupBy');
+  // Order by Filter
+  rmFilter.orderBy = filter('orderBy');
+  rmFilter.where = filter('where');
+
+  rmFilter.cleanDates = function cleanDates(data) {
+    angular.forEach(data, function(value, key) {
+      if (typeof value.created_at !== 'undefined') {
+        value.created_at = moment(value.created_at).format(
+          'DD-MM-YYYY');
+      }
+    })
+    return data;
+  }
+  return rmFilter;
+}]);
+
 angular.module('div').factory('Requests', ['$http', '$rootScope', function(
   http, rootScope) {
   var Requests = {};
@@ -372,8 +393,8 @@ angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider
 });
 
 angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope',
-  function(scope, Requests, state, rootScope) {
+  '$state','$rootScope','rmFilter',
+  function(scope, Requests, state, rootScope, rmFilter) {
     var patient = rootScope.patient;
     scope.DICOM=[];
 
@@ -387,25 +408,56 @@ angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests'
       else{
         patient.series_list.forEach(function(series){
           preview = series.Instances[0];
-          scope.DICOM.push(preview);
+          series = series.ID;
+          scope.DICOM.push({
+            'seriesID':series,
+            'previewID': preview
+          });
         })
       }
+    }
+
+    scope.loadStack = function(series){
+      scope.instances = [];
+      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
+      chosenSeries.forEach(function(series){
+        scope.instances = series.Instances;
+      })
     }
   }
 ])
 
-angular.module('retsu.images').directive('dicomImageList',[function() {
+angular.module('retsu.images').directive('dicomImage',[function() {
     return {
-        restrict: 'A',
         controller: 'imagesCtrl',
-        //transclude: false,
-        link: function (scope, element) {
+        restrict:'EA',
+        scope: {
+          loadStack:'&'
+        },
+        link: function (scope, element,attrs) {
+          $.loadImage(element[0],attrs.id)
+      }
+    }
 
-              scope.DICOM.forEach(function(dicomId){
-                listItem= '<li><a href="#" id="'+dicomId+'"> </a></li>';
-                element.append(listItem);
-                $.loadImage(dicomId);
-              });
+}]);
+
+
+angular.module('retsu.images').directive('dicomStack',[function() {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        link: function (scope, element,attrs) {
+          if(scope.instances.length>0){
+            index = 0;
+            setInterval(function(){
+              if(index<scope.instances.length){
+              $.loadViewPort(element[0],scope.instances[index])
+              index++;
+            }
+          },1000);
+
+          }
+
       }
     }
 
@@ -417,6 +469,7 @@ angular.module('retsu.images').config(function($stateProvider, $urlRouterProvide
     url: '/images',
     views: {
       '': {
+        controller:'imagesCtrl',
         templateUrl: VIEW._modules('images/images.main')
       },
       'dicomImage@admin.images':{
@@ -436,7 +489,7 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
     function get() {
       var payload = {};
       Requests.get('orthanc/patients', payload, function(data) {
-        scope.patients = data;
+        rootScope.patients = data;
       });
     }
 

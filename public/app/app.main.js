@@ -29,7 +29,8 @@ angular.module("div", [
   'retsu.admin',
   'retsu.users',
   'retsu.patients',
-  'retsu.images'
+  'retsu.images',
+  'angular.filter'
 ]);
 
 

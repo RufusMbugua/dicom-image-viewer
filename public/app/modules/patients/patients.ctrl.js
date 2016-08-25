@@ -8,7 +8,7 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
     function get() {
       var payload = {};
       Requests.get('orthanc/patients', payload, function(data) {
-        scope.patients = data;
+        rootScope.patients = data;
       });
     }
 

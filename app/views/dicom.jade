@@ -1,8 +1,10 @@
 .row
  .col-xs-3(style="padding:0")
   .card-sm
-    ul.nav.nav-pills.nav-stacked.dicomList(dicom-image-list="")
+    ul.nav.nav-pills.nav-stacked.dicomList
       .title Series Preview
+      li(ng-repeat="image in DICOM")
+       a(id="{{image.previewID}}",ng-click="loadStack(image.seriesID)",dicom-image="")
  .col-md-9(style="padding:0")
   .card-sm
     .inner(style="height:450px")
@@ -22,7 +24,7 @@
        a.btn.btn-sm.btn-warning#play(title="Play") #[i.ion-play]
        a.btn.btn-sm.btn-warning#stop(title="Stop") #[i.ion-stop]
        a.btn.btn-sm.btn-warning#save(title="Save") #[i.fa.fa-hdd-o]
-     #dicomImage(style="height:400px")
+     #dicomImage(style="height:400px",ng-if="instances",dicom-stack="")
      
      dialog.annotationDialog
       h5 Enter your annotation
@@ -52,6 +54,7 @@
        .col-1-2
          label(for="magSizeRange") Magnifying glass size
          input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
+         
      
    
    
