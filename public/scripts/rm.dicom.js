@@ -1,82 +1,13 @@
-$(document).ready(function() {
-  var image = 'wadouri:http://rufusmbugua.com:8043/instances/3ab1634c-fc3309d0-3f7add48-08583c7b-24c62bb6';
-
-
-  var element = document.getElementById('dicomImage')
-
-  var dialog = document.querySelector('dialog');
-  dialogPolyfill.registerDialog(dialog);
-
-  // Define a callback to get your text annotation
-  // This could be used, e.g. to open a modal
-  function getTextCallback(doneChangingTextCallback) {
-    var dialog = $('.annotationDialog');
-    var getTextInput = dialog.find('.annotationTextInput');
-    var confirm = dialog.find('.annotationDialogConfirm');
-    dialog.get(0).showModal();
-    confirm.off('click');
-    confirm.on('click', function() {
-      closeHandler();
-    });
-    dialog.off("keydown");
-    dialog.on('keydown', keyPressHandler);
-    function keyPressHandler(e) {
-      // If Enter is pressed, close the dialog
-      if (e.which === 13) {
-        closeHandler();
-      }
-    }
-    function closeHandler() {
-      dialog.get(0).close();
-      doneChangingTextCallback(getTextInput.val());
-      // Reset the text value
-      getTextInput.val("");
-    }
-  }
-  // Define a callback to edit your text annotation
-  // This could be used, e.g. to open a modal
-  function changeTextCallback(data, eventData, doneChangingTextCallback) {
-    var dialog = $('.relabelDialog');
-    var getTextInput = dialog.find('.annotationTextInput');
-    var confirm = dialog.find('.relabelConfirm');
-    var remove = dialog.find('.relabelRemove');
-    getTextInput.val(data.annotationText);
-    dialog.get(0).showModal();
-    confirm.off('click');
-    confirm.on('click', function() {
-      dialog.get(0).close();
-      doneChangingTextCallback(data, getTextInput.val());
-    });
-    // If the remove button is clicked, delete this marker
-    remove.off('click');
-    remove.on('click', function() {
-      dialog.get(0).close();
-      doneChangingTextCallback(data, undefined, true);
-    });
-    dialog.off("keydown");
-    dialog.on('keydown', keyPressHandler);
-    function keyPressHandler(e) {
-      // If Enter is pressed, close the dialog
-      if (e.which === 13) {
-        closeHandler();
-      }
-    }
-    function closeHandler() {
-      dialog.get(0).close();
-      doneChangingTextCallback(data, getTextInput.val());
-      // Reset the text value
-      getTextInput.val("");
-    }
-
-  }
-  var config = {
-    getTextCallback : getTextCallback,
-    changeTextCallback : changeTextCallback,
-    drawHandles : false,
-    drawHandlesOnHover : true,
-    arrowFirst : true
-  }
-
+/**
+* <author> Rufus Mbugua
+* <email> mbuguarufus@gmail.com
+* [loadImage description]
+* @param  {[type]} element [description]
+* @param  {[type]} image   [description]
+* @return {[type]}         [description]
+*/
+$.loadImage =   function (image){
+  var element = document.getElementById(image);
   var magLevelRange = $("#magLevelRange")
   magLevelRange.on("change", function() {
     var config = cornerstoneTools.magnify.getConfiguration();
@@ -95,9 +26,8 @@ $(document).ready(function() {
     magnificationLevel: parseInt(magLevelRange.val(), 10)
   };
 
-
   cornerstone.enable(element);
-  cornerstone.loadImage(image+'/file').then(function(image) {
+  cornerstone.loadImage('wadouri:http://orthanc.rufusmbugua.com/instances/'+image+'/file').then(function(image) {
     cornerstone.displayImage(element, image);
     // image enable the dicomImage element
     // Enable mouse and touch input
@@ -207,5 +137,4 @@ $(document).ready(function() {
     cornerstoneTools.magnifyTouchDrag.activate(element);
     return false;
   });
-
-});
+}

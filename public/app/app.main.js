@@ -2,6 +2,7 @@ var PATH = {
   _modules:'app/modules/',
   _globals:'app/global/'
 }
+var DICOM=[];
 
 var VIEW ={
   _modules:function(path){
@@ -27,7 +28,8 @@ angular.module("div", [
   'angular-loading-bar',
   'retsu.admin',
   'retsu.users',
-  'retsu.patients'
+  'retsu.patients',
+  'retsu.images'
 ]);
 
 

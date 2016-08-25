@@ -247,3 +247,18 @@ p.null-message{
 .full-content{
   height:100%;
 }
+
+.dicomList{
+  li{
+    padding:2px;
+    &:hover{
+      background:$mellow-apricot;
+    }
+    a{
+      padding:0 !important;
+      &:hover{
+        background:transparent;
+      }
+    }
+  }
+}

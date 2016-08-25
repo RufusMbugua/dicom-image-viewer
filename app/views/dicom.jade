@@ -1,24 +1,27 @@
-extends layouts/main
-
-block content
-  .autogrid
-   .col.chart
+.row
+ .col-xs-3(style="padding:0")
+  .card-sm
+    ul.nav.nav-pills.nav-stacked.dicomList(dicom-image-list="")
+      .title Series Preview
+ .col-md-9(style="padding:0")
+  .card-sm
     .inner(style="height:450px")
+     .title Image
      .action
       .buttons
-       a.btn.small.solid.red#invert(title="Invert") #[i.fa.fa-adjust]
-       a.btn.small.solid.red#rotate(title="Rotate") #[i.ion-arrow-return-right]
-       a.btn.small.solid.red#zoom(title="Zoom") #[i.fa.fa-search]
-       a.btn.small.solid.red#magnify(title="Magnify") #[i.fa.fa-search-plus]
-       a.btn.small.solid.red#length(title="Length") #[i.fa.fa-arrows-h]
-       a.btn.small.solid.red#annotate(title="Annotate") #[i.fa.fa-commenting]
-       a.btn.small.solid.red#angle(title="Angle") #[i.fa.fa-pencil-square-o]
-       a.btn.small.solid.red#highlight(title="Highlight") #[i.ion-edit]
-       a.btn.small.solid.red#dragProbe(title="Drag & Probe") #[i.fa.fa-hand-paper-o]
-       a.btn.small.solid.red#freehand(title="Freehand") #[i.fa.fa-hand-lizard-o]
-       a.btn.small.solid.red#play(title="Play") #[i.ion-play]
-       a.btn.small.solid.red#stop(title="Stop") #[i.ion-stop]
-       a.btn.small.solid.red#save(title="Save") #[i.fa.fa-hdd-o]
+       a.btn.btn-sm.btn-warning#invert(title="Invert") #[i.fa.fa-adjust]
+       a.btn.btn-sm.btn-warning#rotate(title="Rotate") #[i.ion-arrow-return-right]
+       a.btn.btn-sm.btn-warning#zoom(title="Zoom") #[i.fa.fa-search]
+       a.btn.btn-sm.btn-warning#magnify(title="Magnify") #[i.fa.fa-search-plus]
+       a.btn.btn-sm.btn-warning#length(title="Length") #[i.fa.fa-arrows-h]
+       a.btn.btn-sm.btn-warning#annotate(title="Annotate") #[i.fa.fa-commenting]
+       a.btn.btn-sm.btn-warning#angle(title="Angle") #[i.fa.fa-pencil-square-o]
+       a.btn.btn-sm.btn-warning#highlight(title="Highlight") #[i.ion-edit]
+       a.btn.btn-sm.btn-warning#dragProbe(title="Drag & Probe") #[i.fa.fa-hand-paper-o]
+       a.btn.btn-sm.btn-warning#freehand(title="Freehand") #[i.fa.fa-hand-lizard-o]
+       a.btn.btn-sm.btn-warning#play(title="Play") #[i.ion-play]
+       a.btn.btn-sm.btn-warning#stop(title="Stop") #[i.ion-stop]
+       a.btn.btn-sm.btn-warning#save(title="Save") #[i.fa.fa-hdd-o]
      #dicomImage(style="height:400px")
      
      dialog.annotationDialog
@@ -36,12 +39,12 @@ block content
        a.relabelRemove.btn.small.solid.red Remove marker
        a.relabelConfirm.btn.small.blue OK
        
-  .autogrid
-    .col
+  .row
+    .col-xs-4
       .inner(style="padding:0 20px")
        label(for="filename") Save as:
        input#filename(type="text",value="cornerstone.png")
-    .col
+    .col-xs-4
       .inner
        .col-1-2
          label(for="magLevelRange") Magnification Level
@@ -49,8 +52,7 @@ block content
        .col-1-2
          label(for="magSizeRange") Magnifying glass size
          input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
-       
-       
      
-     
-    
+   
+   
+  

@@ -5543,6 +5543,9 @@ a {
 .link, .link:hover {
   color: #EF4836; }
 
+.action {
+  background: #f0b67f; }
+
 /* Cards */
 .card-sm {
   padding: 10px;
@@ -5562,7 +5565,11 @@ a {
     .card-sm .header i {
       padding-right: 10px; }
   .card-sm .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-sm .content {
     padding-top: 0;
     padding: 0.5em;
@@ -5599,7 +5606,11 @@ a:hover {
     .card-md .header i {
       padding-right: 10px; }
   .card-md .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-md .content {
     padding-top: 0;
     padding: 0.5em;
@@ -5631,7 +5642,11 @@ a:hover {
     .card-lg .header i {
       padding-right: 10px; }
   .card-lg .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-lg .content {
     padding-top: 0;
     padding: 0.5em;
@@ -6618,6 +6633,15 @@ p.null-message {
 
 .full-content {
   height: 100%; }
+
+.dicomList li {
+  padding: 2px; }
+  .dicomList li:hover {
+    background: #f0b67f; }
+  .dicomList li a {
+    padding: 0 !important; }
+    .dicomList li a:hover {
+      background: transparent; }
 
 table {
   margin-bottom: 0 !important;

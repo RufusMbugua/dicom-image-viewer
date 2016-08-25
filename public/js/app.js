@@ -2,6 +2,7 @@ var PATH = {
   _modules:'app/modules/',
   _globals:'app/global/'
 }
+var DICOM=[];
 
 var VIEW ={
   _modules:function(path){
@@ -27,7 +28,8 @@ angular.module("div", [
   'angular-loading-bar',
   'retsu.admin',
   'retsu.users',
-  'retsu.patients'
+  'retsu.patients',
+  'retsu.images'
 ]);
 
 
@@ -369,9 +371,64 @@ angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider
   })
 });
 
+angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
+  '$state','$rootScope',
+  function(scope, Requests, state, rootScope) {
+    var patient = rootScope.patient;
+    scope.DICOM=[];
+
+    loadSeries();
+
+
+    function loadSeries(){
+      if(!rootScope.patient){
+        console.log('Empty')
+      }
+      else{
+        patient.series_list.forEach(function(series){
+          preview = series.Instances[0];
+          scope.DICOM.push(preview);
+        })
+      }
+    }
+  }
+])
+
+angular.module('retsu.images').directive('dicomImageList',[function() {
+    return {
+        restrict: 'A',
+        controller: 'imagesCtrl',
+        //transclude: false,
+        link: function (scope, element) {
+
+              scope.DICOM.forEach(function(dicomId){
+                listItem= '<li><a href="#" id="'+dicomId+'"> </a></li>';
+                element.append(listItem);
+                $.loadImage(dicomId);
+              });
+      }
+    }
+
+}]);
+
+angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.images', {
+    url: '/images',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('images/images.main')
+      },
+      'dicomImage@admin.images':{
+        templateUrl: VIEW._modules('images/dicom')
+      }
+    }
+  })
+});
+
 angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
+  '$state','$rootScope',
+  function(scope, Requests, state, rootScope) {
     scope.user = {};
 
     scope.filterOptions = ['Date', 'Tags'];
@@ -384,7 +441,7 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
     }
 
     scope.add = function add() {
-      var payload = scope.question;
+      var payload = scope.patient;
       Requests.post('patients', payload, function(data) {
         if(data.success){
           state.go('admin.patients.list')
@@ -392,27 +449,16 @@ angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Reque
       });
     }
 
-    scope.login = function login() {
-      var payload = scope.user;
-      Requests.post('auth', payload, function(data) {
-        if(data.success){
-          scope.user = data.user;
-          state.go('admin.patients.dashboard')
-        }
-
-      });
-    }
-
     scope.edit = function edit() {
-      var payload = scope.question;
+      var payload = scope.patient;
       Requests.put('patients/' + payload.id, payload, function(data) {
-        scope.question = data.success.data;
+        scope.patient = data.success.data;
       });
     }
 
-    scope.view = function view(question) {
-      scope.currentQuestion = question;
-      state.go('patients.view')
+    scope.view = function view(patient) {
+      rootScope.patient = patient;
+      state.go('admin.images')
     }
   }
 ])
