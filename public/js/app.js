@@ -41,20 +41,26 @@ angular.module("div", [
  * @requires $rootScope
  * @memberof ClientApp
  */
-angular.module("div").run(['$http', '$rootScope', '$state', function($http,
+angular.module("div").run(['$http', '$rootScope', '$state','errorMessage','$sce',
+function($http,
   rootScope,
-  state) {
+  state,
+  errorMessage,
+  sce) {
   rootScope.date = new Date();
   rootScope.title = 'KE.scrow';
   rootScope.messages = [];
   rootScope.menu = [];
   rootScope.errors = [];
   rootScope.state = state;
-}]);
+  rootScope.errorList ={}
+  errorMessage.list(function(data){
+    rootScope.errorList = data;
+  })
 
-angular.module("div").controller('appCtrl', ['$location', function(
-  $location) {
-    console.log('Hello');
+  rootScope.trustAsHtml = function(html){
+    return sce.trustAsHtml(html)
+  }
 }]);
 
 /**
@@ -147,215 +153,6 @@ angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider
   })
 });
 
-angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
-  '$state','$rootScope',
-  function(scope, Requests, state, rootScope) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-    get();
-    function get() {
-      var payload = {};
-      Requests.get('orthanc/patients', payload, function(data) {
-        rootScope.patients = data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.patient;
-      Requests.post('patients', payload, function(data) {
-        if(data.success){
-          state.go('admin.patients.list')
-        }
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.patient;
-      Requests.put('patients/' + payload.id, payload, function(data) {
-        scope.patient = data.success.data;
-      });
-    }
-
-    scope.view = function view(patient) {
-      rootScope.patient = patient;
-      state.go('admin.images')
-    }
-  }
-])
-
-angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.patients', {
-    url: '/patients',
-    views: {
-      '': {
-        controller: 'patientsCtrl',
-        templateUrl: VIEW._modules('patients/patients.main')
-      }
-    }
-  })
-  .state('admin.patients.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('patients/patients.dashboard')
-      },
-      'patients.list@admin.patients.dashboard':{
-        templateUrl: VIEW._modules('patients/patients.list')
-      }
-    }
-  })
-});
-
-angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope','rmFilter',
-  function(scope, Requests, state, rootScope, rmFilter) {
-    var patient = rootScope.patient;
-    scope.DICOM=[];
-
-    loadSeries();
-
-
-    function loadSeries(){
-      if(!rootScope.patient){
-        console.log('Empty')
-      }
-      else{
-        patient.series_list.forEach(function(series){
-          preview = series.Instances[0];
-          series = series.ID;
-          scope.DICOM.push({
-            'seriesID':series,
-            'previewID': preview
-          });
-        })
-      }
-    }
-
-    scope.loadStack = function(series){
-      scope.instances = [];
-      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
-      chosenSeries.forEach(function(series){
-        scope.instances = series.Instances;
-      })
-    }
-  }
-])
-
-angular.module('retsu.images').directive('dicomImage',[function() {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        scope: {
-          loadStack:'&'
-        },
-        link: function (scope, element,attrs) {
-          $.loadImage(element[0],attrs.id)
-      }
-    }
-
-}]);
-
-
-angular.module('retsu.images').directive('dicomStack',[function() {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        link: function (scope, element,attrs) {
-          if(scope.instances.length>0){
-            index = 0;
-            setInterval(function(){
-              if(index<scope.instances.length){
-              $.loadViewPort(element[0],scope.instances[index])
-              index++;
-            }
-          },1000);
-
-          }
-
-      }
-    }
-
-}]);
-
-angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.images', {
-    url: '/images',
-    views: {
-      '': {
-        controller:'imagesCtrl',
-        templateUrl: VIEW._modules('images/images.main')
-      },
-      'dicomImage@admin.images':{
-        templateUrl: VIEW._modules('images/dicom')
-      }
-    }
-  })
-});
-
-angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-
-    function get() {
-      var payload = {};
-      Requests.get('questions', payload, function(data) {
-        scope.questions = data.success.data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.question;
-      Requests.post('questions', payload, function(data) {
-        if(data.success){
-          state.go('admin.questions.list')
-        }
-      });
-    }
-
-    scope.login = function login() {
-      var payload = scope.user;
-      Requests.post('auth', payload, function(data) {
-        if(data.success){
-          scope.user = data.user;
-          state.go('admin.questions.dashboard')
-        }
-
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.question;
-      Requests.put('questions/' + payload.id, payload, function(data) {
-        scope.question = data.success.data;
-      });
-    }
-
-    scope.view = function view(question) {
-      scope.currentQuestion = question;
-      state.go('questions.view')
-    }
-  }
-])
-
-angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('login', {
-    url: '/login',
-    views: {
-      '': {
-        controller: 'usersCtrl',
-        templateUrl: VIEW._modules('users/users.login')
-      }
-    }
-  })
-});
-
 angular.module('div').factory('ArrayHelper', function() {
 
   var ArrayHelper = {};
@@ -377,69 +174,80 @@ angular.module('div').factory('ArrayHelper', function() {
 });
 
 angular.module("div").factory('errorInterceptor', ['$q', '$log',
-  '$rootScope', '$timeout',
-  '$injector',
-  function(q, log, rootScope, timeout, injector) {
-    rootScope.error = null;
-    return {
-      // optional method
-      'requestError': function(rejection) {
-        // do something on error
-        if (canRecover(rejection)) {
-          return responseOrNewPromise
-        }
-        return $q.reject(rejection);
-      },
-      // optional method
-      'response': function(response) {
-        if (response.data.success) {
-          var success = {
-            "icon": "ion-check",
-            "type": "success",
-            "code": response.status,
-            "msg": response.statusText,
-            "message": response.data.message
-          };
-          rootScope.success = success;
-          rootScope.showSuccess = true;
-          timeout(function() {
-            rootScope.showSuccess = false;
-          }, 2000);
-        }
-        return response;
-      },
-
-
-      // optional method
-      'responseError': function(response) {
-        console.log(response);
-        if (!response.data.success) {
-          var error = {
-            "icon": "ion-android-alert",
-            "type": "danger",
-            "code": response.status,
-            "msg": response.statusText,
-            "message": response.data.message
-          };
-          rootScope.error = error;
-          rootScope.showError = true;
-          timeout(function() {
-            rootScope.showError = false;
-          }, 3000);
-
-          // do something on error
-          var stateService = injector.get('$state');
-          if (response.status == 401) {
-            timeout(function() {
-              stateService.go('login');
-            }, 3000)
-          }
-        }
-        return q.reject(response);
+'$rootScope', '$timeout',
+'$injector',
+function(q, log, rootScope, timeout, injector) {
+  rootScope.error = null;
+  return {
+    // optional method
+    'requestError': function(rejection) {
+      // do something on error
+      if (canRecover(rejection)) {
+        return responseOrNewPromise
       }
+      return $q.reject(rejection);
+    },
+    // optional method
+    'response': function(response) {
+      if (response.data.success) {
+        var success = {
+          "icon": "ion-check",
+          "type": "success",
+          "code": response.status,
+          "msg": response.statusText,
+          "message": response.data.message
+        };
+        rootScope.success = success;
+        rootScope.showSuccess = true;
+        timeout(function() {
+          rootScope.showSuccess = false;
+        }, 2000);
+      }
+      return response;
+    },
+
+
+    // optional method
+    'responseError': function(response) {
+      console.log(response);
+      if (!response.data.success) {
+        var error = {
+          "icon": "ion-android-alert",
+          "type": "danger",
+          "code": response.status,
+          "msg": response.statusText,
+          "message": response.data.message
+        };
+        rootScope.error = error;
+        rootScope.showError = true;
+        timeout(function() {
+          rootScope.showError = false;
+        }, 3000);
+
+        // do something on error
+        var stateService = injector.get('$state');
+        if (response.status == 401) {
+          timeout(function() {
+            stateService.go('login');
+          }, 3000)
+        }
+      }
+      return q.reject(response);
     }
   }
+}
 ]);
+
+angular.module('div').factory('errorMessage',['Requests',function(Requests){
+  var payload={};
+  var list;
+
+  return{
+    list: function(callback){
+      Requests.get('app/global/info/errors.json',payload,callback);
+    }
+  }
+}]);
 
 angular.module("div").config(['$httpProvider', function(httpProvider) {
   httpProvider.interceptors.push('errorInterceptor');
@@ -600,3 +408,212 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
   }
   return Requests;
 }])
+
+angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
+  '$state','$rootScope','rmFilter','errorMessage',
+  function(scope, Requests, state, rootScope, rmFilter,errorMessage) {
+    var patient = rootScope.patient;
+    scope.DICOM=[];
+
+    loadSeries();
+
+
+    function loadSeries(){
+      if(!rootScope.patient){
+        console.log('Empty')
+      }
+      else{
+        patient.series_list.forEach(function(series){
+          preview = series.Instances[0];
+          series = series.ID;
+          scope.DICOM.push({
+            'seriesID':series,
+            'previewID': preview
+          });
+        })
+      }
+    }
+
+    scope.loadStack = function(series){
+      scope.instances = [];
+      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
+      chosenSeries.forEach(function(series){
+        scope.instances = series.Instances;
+      })
+    }
+  }
+])
+
+angular.module('retsu.images').directive('dicomImage',[function() {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        scope: {
+          loadStack:'&'
+        },
+        link: function (scope, element,attrs) {
+          $.loadImage(element[0],attrs.id)
+      }
+    }
+
+}]);
+
+
+angular.module('retsu.images').directive('dicomStack',[function() {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        link: function (scope, element,attrs) {
+          if(scope.instances.length>0){
+            index = 0;
+            setInterval(function(){
+              if(index<scope.instances.length){
+              $.loadViewPort(element[0],scope.instances[index])
+              index++;
+            }
+          },1000);
+
+          }
+
+      }
+    }
+
+}]);
+
+angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.images', {
+    url: '/images',
+    views: {
+      '': {
+        controller:'imagesCtrl',
+        templateUrl: VIEW._modules('images/images.main')
+      },
+      'dicomImage@admin.images':{
+        templateUrl: VIEW._modules('images/dicom')
+      }
+    }
+  })
+});
+
+angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
+  '$state','$rootScope',
+  function(scope, Requests, state, rootScope) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+    get();
+    function get() {
+      var payload = {};
+      Requests.get('orthanc/patients', payload, function(data) {
+        rootScope.patients = data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.patient;
+      Requests.post('patients', payload, function(data) {
+        if(data.success){
+          state.go('admin.patients.list')
+        }
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.patient;
+      Requests.put('patients/' + payload.id, payload, function(data) {
+        scope.patient = data.success.data;
+      });
+    }
+
+    scope.view = function view(patient) {
+      rootScope.patient = patient;
+      state.go('admin.images')
+    }
+  }
+])
+
+angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.patients', {
+    url: '/patients',
+    views: {
+      '': {
+        controller: 'patientsCtrl',
+        templateUrl: VIEW._modules('patients/patients.main')
+      }
+    }
+  })
+  .state('admin.patients.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('patients/patients.dashboard')
+      },
+      'patients.list@admin.patients.dashboard':{
+        templateUrl: VIEW._modules('patients/patients.list')
+      }
+    }
+  })
+});
+
+angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+
+    function get() {
+      var payload = {};
+      Requests.get('questions', payload, function(data) {
+        scope.questions = data.success.data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.question;
+      Requests.post('questions', payload, function(data) {
+        if(data.success){
+          state.go('admin.questions.list')
+        }
+      });
+    }
+
+    scope.login = function login() {
+      var payload = scope.user;
+      Requests.post('auth', payload, function(data) {
+        if(data.success){
+          scope.user = data.user;
+          state.go('admin.questions.dashboard')
+        }
+
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.question;
+      Requests.put('questions/' + payload.id, payload, function(data) {
+        scope.question = data.success.data;
+      });
+    }
+
+    scope.view = function view(question) {
+      scope.currentQuestion = question;
+      state.go('questions.view')
+    }
+  }
+])
+
+angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('login', {
+    url: '/login',
+    views: {
+      '': {
+        controller: 'usersCtrl',
+        templateUrl: VIEW._modules('users/users.login')
+      }
+    }
+  })
+});
