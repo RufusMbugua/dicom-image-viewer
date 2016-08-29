@@ -1,3 +1,5 @@
 {
-  "no_patient_selected": "You have not selected a patient.</br> Kindly pick go to <a href='#/admin/patients/dashboard' class='btn btn-primary'>Pick a Patient</a>"
+  "no_patient_selected": "You have not selected a patient.</br> Kindly pick go to <a href='#/admin/patients/dashboard' class='btn btn-primary'>Pick a Patient</a>",
+  "no_comments": "There are no comments",
+  "no_series_selected": "<i class='ion-arrow-left-c'></i>&nbsp  Please select a series from the list on the left"
 }

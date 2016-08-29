@@ -5545,6 +5545,9 @@ a {
 
 .action {
   background: #f0b67f; }
+  .action .buttons {
+    width: 80%;
+    margin: auto; }
 
 /* Cards */
 .card-sm {
@@ -6640,7 +6643,7 @@ p.null-message {
     background: #f0b67f; }
   .dicomList li a {
     padding: 0 !important;
-    height: 200px; }
+    height: 100px; }
     .dicomList li a:hover {
       background: transparent; }
 
