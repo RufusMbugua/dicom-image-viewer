@@ -18,6 +18,9 @@ router.get('/patients', function(req, res, next) {
     get_patient,
   ],
   function (err, result) {
+    if(err){
+      res.send('Error in Connection')
+    }
     patients = result;
     result = result.map(transform_patients);
     res.json(result)

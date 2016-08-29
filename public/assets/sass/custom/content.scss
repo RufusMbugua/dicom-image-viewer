@@ -11,6 +11,9 @@ html,body{
       > div.row{
         height:100%;
         overflow-y:hidden;
+        > .main{
+          overflow-y:auto;
+        }
       }
     }
   }
@@ -243,4 +246,20 @@ p.null-message{
 
 .full-content{
   height:100%;
+}
+
+.dicomList{
+  li{
+    padding:2px;
+    &:hover{
+      background:$mellow-apricot;
+    }
+    a{
+      padding:0 !important;
+      height:200px;
+      &:hover{
+        background:transparent;
+      }
+    }
+  }
 }

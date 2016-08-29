@@ -1,5 +1,6 @@
 table{
   @extend .table;
+  margin-bottom: 0 !important;
   background:white;
   .btn{
     @extend .btn-sm;

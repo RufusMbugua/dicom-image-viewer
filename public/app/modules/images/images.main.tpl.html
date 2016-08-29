@@ -1,0 +1,11 @@
+<div class="padded content" ng-controller="imagesCtrl">
+  <div class="row">
+    <div ui-view="dicomImage" class="col-md-12">
+    </div>
+    <div ng-if="!patient">
+      <p>
+        No Patient Selected
+      </p>
+    </div>
+  </div>
+</div>

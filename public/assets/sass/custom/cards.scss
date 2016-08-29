@@ -1,7 +1,7 @@
 
 /* Cards */
 @mixin card($height){
-  padding:5%;
+  padding:10px;
   background:white;
   width:100% !important;
   min-height:$height !important;
@@ -21,7 +21,11 @@
     }
   }
   .title{
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid #ddd !important;
+    color:#333 !important;
+    position: relative !important;
+    padding:0 !important;
+    margin-bottom:0.5em;
   }
   .content{
     padding-top:0;

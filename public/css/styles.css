@@ -5543,9 +5543,12 @@ a {
 .link, .link:hover {
   color: #EF4836; }
 
+.action {
+  background: #f0b67f; }
+
 /* Cards */
 .card-sm {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 120px !important;
@@ -5562,7 +5565,11 @@ a {
     .card-sm .header i {
       padding-right: 10px; }
   .card-sm .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-sm .content {
     padding-top: 0;
     padding: 0.5em;
@@ -5582,7 +5589,7 @@ a:hover {
     border: 1px solid #2C3E50; }
 
 .card-md {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 300px !important;
@@ -5599,7 +5606,11 @@ a:hover {
     .card-md .header i {
       padding-right: 10px; }
   .card-md .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-md .content {
     padding-top: 0;
     padding: 0.5em;
@@ -5614,7 +5625,7 @@ a:hover {
     margin-bottom: 10px; }
 
 .card-lg {
-  padding: 5%;
+  padding: 10px;
   background: white;
   width: 100% !important;
   min-height: 500px !important;
@@ -5631,7 +5642,11 @@ a:hover {
     .card-lg .header i {
       padding-right: 10px; }
   .card-lg .title {
-    border-bottom: 1px solid #ddd; }
+    border-bottom: 1px solid #ddd !important;
+    color: #333 !important;
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0.5em; }
   .card-lg .content {
     padding-top: 0;
     padding: 0.5em;
@@ -6436,6 +6451,8 @@ html, body {
       html > div > div > div.row, .content.main html > div > div > div.form-group, form html > div > div > div.form-group, body > div > div > div.row, .content.main body > div > div > div.form-group, form body > div > div > div.form-group {
         height: 100%;
         overflow-y: hidden; }
+        html > div > div > div.row > .main, .content.main html > div > div > div.form-group > .main, form html > div > div > div.form-group > .main, body > div > div > div.row > .main, .content.main body > div > div > div.form-group > .main, form body > div > div > div.form-group > .main {
+          overflow-y: auto; }
 
 div#main {
   background: whitesmoke; }
@@ -6617,7 +6634,18 @@ p.null-message {
 .full-content {
   height: 100%; }
 
+.dicomList li {
+  padding: 2px; }
+  .dicomList li:hover {
+    background: #f0b67f; }
+  .dicomList li a {
+    padding: 0 !important;
+    height: 200px; }
+    .dicomList li a:hover {
+      background: transparent; }
+
 table {
+  margin-bottom: 0 !important;
   background: white; }
   table .btn {
     margin-bottom: 0 !important; }
