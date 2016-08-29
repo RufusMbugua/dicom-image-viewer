@@ -41,18 +41,24 @@ angular.module("div", [
  * @requires $rootScope
  * @memberof ClientApp
  */
-angular.module("div").run(['$http', '$rootScope', '$state', function($http,
+angular.module("div").run(['$http', '$rootScope', '$state','errorMessage','$sce',
+function($http,
   rootScope,
-  state) {
+  state,
+  errorMessage,
+  sce) {
   rootScope.date = new Date();
   rootScope.title = 'KE.scrow';
   rootScope.messages = [];
   rootScope.menu = [];
   rootScope.errors = [];
   rootScope.state = state;
-}]);
+  rootScope.errorList ={}
+  errorMessage.list(function(data){
+    rootScope.errorList = data;
+  })
 
-angular.module("div").controller('appCtrl', ['$location', function(
-  $location) {
-    console.log('Hello');
+  rootScope.trustAsHtml = function(html){
+    return sce.trustAsHtml(html)
+  }
 }]);

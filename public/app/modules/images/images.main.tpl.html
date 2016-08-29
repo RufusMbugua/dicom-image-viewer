@@ -1,10 +1,13 @@
 <div class="padded content" ng-controller="imagesCtrl">
   <div class="row">
-    <div ui-view="dicomImage" class="col-md-12">
+    <div ng-if="patient" ui-view="dicomImage" class="col-md-12">
     </div>
     <div ng-if="!patient">
-      <p>
-        No Patient Selected
+      <p class="alert alert-info">
+        <i class="ion-alert"></i>
+        <span ng-bind-html="trustAsHtml(errorList.no_patient_selected)">
+
+        </span>
       </p>
     </div>
   </div>

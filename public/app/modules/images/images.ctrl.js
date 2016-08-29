@@ -1,6 +1,6 @@
 angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope','rmFilter',
-  function(scope, Requests, state, rootScope, rmFilter) {
+  '$state','$rootScope','rmFilter','errorMessage',
+  function(scope, Requests, state, rootScope, rmFilter,errorMessage) {
     var patient = rootScope.patient;
     scope.DICOM=[];
 

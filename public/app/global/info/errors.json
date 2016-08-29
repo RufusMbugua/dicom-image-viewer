@@ -1,0 +1,3 @@
+{
+  "no_patient_selected": "You have not selected a patient.</br> Kindly pick go to <a href='#/admin/patients/dashboard' class='btn btn-primary'>Pick a Patient</a>"
+}
