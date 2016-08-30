@@ -1,4 +1,4 @@
-angular.module('retsu.images').directive('dicomImage',[function() {
+angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(rmCornerstone) {
     return {
         controller: 'imagesCtrl',
         restrict:'EA',
@@ -6,7 +6,7 @@ angular.module('retsu.images').directive('dicomImage',[function() {
           loadStack:'&'
         },
         link: function (scope, element,attrs) {
-          $.loadImage(element[0],attrs.id)
+          rmCornerstone.loadImage(element[0],attrs.id)
       }
     }
 

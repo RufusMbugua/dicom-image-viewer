@@ -1,6 +1,6 @@
-angular.module('retsu.images',[]).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope','rmFilter','errorMessage',
-  function(scope, Requests, state, rootScope, rmFilter,errorMessage) {
+angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
+  '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
+  function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
     var patient = rootScope.patient;
     scope.DICOM=[];
 
