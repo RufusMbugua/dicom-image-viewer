@@ -27,6 +27,19 @@ router.get('/patients', function(req, res, next) {
   });
 });
 
+router.get('/instances',function(req, res, next){
+  var instances = req.query.list;
+  async.map(instances,get_instance,
+  function (err, result) {
+    if(err){
+      res.send('Error in Connection')
+    }
+    var instance_files = result;
+    res.send(instance_files)
+  });
+});
+
+
 /**
 * [get_patients description]
 * @param  {[type]} waterfallCallback [description]
@@ -64,7 +77,7 @@ function get_patient(patients,callback){
           // extended is an array containing the parsed JSON
           callback(null,extended)
         })
-      })
+      });
     }, function(err, extended) {
       if (err) {
         // handle error
@@ -94,6 +107,16 @@ function get_patient(patients,callback){
     });
   }
 
+  function get_instance(instance,callback){
+      request(orthanc + 'instances/' + instance + '/file',function(err, response, body){
+        if (err) {
+          return callback(err);
+        }
+        callback(null, body);
+      })
+
+  }
+
   function transform_patients(patient){
     var obj = {};
 
@@ -107,7 +130,6 @@ function get_patient(patients,callback){
     obj.series_list = patient[0].seriesList;
 
     return obj;
-
   }
 
   module.exports = router;

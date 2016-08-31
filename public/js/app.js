@@ -2,7 +2,6 @@ var PATH = {
   _modules:'app/modules/',
   _globals:'app/global/'
 }
-var DICOM=[];
 
 var VIEW ={
   _modules:function(path){
@@ -377,6 +376,7 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
 }])
 
 angular.module('div').factory('rmCornerstone',[function(element){
+  var orthanc_url = 'http://orthanc.rufusmbugua.com/';
   return{
     /**
     * <author> Rufus Mbugua
@@ -389,14 +389,14 @@ angular.module('div').factory('rmCornerstone',[function(element){
 
     loadImage : function(element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image+'/file').then(function(image) {
+      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
         cornerstone.displayImage(element, image);
       });
     },
 
     loadViewPort : function (element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image+'/file').then(function(image) {
+      cornerstone.loadImage('wadouri:'+image).then(function(image) {
         cornerstone.displayImage(element, image);
         // image enable the dicomImage element
         // Enable mouse and touch input
@@ -589,6 +589,16 @@ angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requ
       var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
       chosenSeries.forEach(function(series){
         scope.instances = series.Instances;
+        loadStackImages();
+      })
+    }
+
+
+    function loadStackImages(){
+      var payload={};
+      payload.list = scope.instances;
+      Requests.get('orthanc/instances',payload,function(data){
+        console.log(data);
       })
     }
   }
@@ -609,22 +619,12 @@ angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(
 }]);
 
 
-angular.module('retsu.images').directive('dicomStack',[function() {
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone',function(rmCornerstone) {
     return {
         controller: 'imagesCtrl',
         restrict:'EA',
         link: function (scope, element,attrs) {
-          if(scope.instances.length>0){
-            index = 0;
-            setInterval(function(){
-              if(index<scope.instances.length){
-              $.loadViewPort(element[0],scope.instances[index])
-              index++;
-            }
-          },1000);
-
-          }
-
+          rmCornerstone.loadViewPort(element[0],scope.instances[0])
       }
     }
 

@@ -1,4 +1,5 @@
 angular.module('div').factory('rmCornerstone',[function(element){
+  var orthanc_url = 'http://orthanc.rufusmbugua.com/';
   return{
     /**
     * <author> Rufus Mbugua
@@ -11,14 +12,14 @@ angular.module('div').factory('rmCornerstone',[function(element){
 
     loadImage : function(element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image+'/file').then(function(image) {
+      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
         cornerstone.displayImage(element, image);
       });
     },
 
     loadViewPort : function (element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image+'/file').then(function(image) {
+      cornerstone.loadImage('wadouri:'+image).then(function(image) {
         cornerstone.displayImage(element, image);
         // image enable the dicomImage element
         // Enable mouse and touch input

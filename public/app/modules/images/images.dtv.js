@@ -13,22 +13,12 @@ angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(
 }]);
 
 
-angular.module('retsu.images').directive('dicomStack',[function() {
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone',function(rmCornerstone) {
     return {
         controller: 'imagesCtrl',
         restrict:'EA',
         link: function (scope, element,attrs) {
-          if(scope.instances.length>0){
-            index = 0;
-            setInterval(function(){
-              if(index<scope.instances.length){
-              $.loadViewPort(element[0],scope.instances[index])
-              index++;
-            }
-          },1000);
-
-          }
-
+          rmCornerstone.loadViewPort(element[0],scope.instances[0])
       }
     }
 

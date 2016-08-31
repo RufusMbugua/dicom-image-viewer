@@ -28,6 +28,16 @@ angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requ
       var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
       chosenSeries.forEach(function(series){
         scope.instances = series.Instances;
+        loadStackImages();
+      })
+    }
+
+
+    function loadStackImages(){
+      var payload={};
+      payload.list = scope.instances;
+      Requests.get('orthanc/instances',payload,function(data){
+        console.log(data);
       })
     }
   }
