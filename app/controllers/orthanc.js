@@ -108,7 +108,7 @@ function get_patient(patients,callback){
   }
 
   function get_instance(instance,callback){
-      request(orthanc + 'instances/' + instance + '/file',function(err, response, body){
+      request(orthanc + 'instances/' + instance,function(err, response, body){
         if (err) {
           return callback(err);
         }

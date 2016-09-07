@@ -13,7 +13,7 @@ angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(
 }]);
 
 
-angular.module('retsu.images').directive('dicomStack',['rmCornerstone',function(rmCornerstone) {
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
     return {
         controller: 'imagesCtrl',
         restrict:'EA',

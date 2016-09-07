@@ -19,7 +19,7 @@ angular.module('div').factory('rmCornerstone',[function(element){
 
     loadViewPort : function (element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image).then(function(image) {
+      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
         cornerstone.displayImage(element, image);
         // image enable the dicomImage element
         // Enable mouse and touch input

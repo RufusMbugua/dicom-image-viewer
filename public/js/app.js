@@ -396,7 +396,7 @@ angular.module('div').factory('rmCornerstone',[function(element){
 
     loadViewPort : function (element,image){
       cornerstone.enable(element);
-      cornerstone.loadImage('wadouri:'+image).then(function(image) {
+      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
         cornerstone.displayImage(element, image);
         // image enable the dicomImage element
         // Enable mouse and touch input
@@ -589,16 +589,6 @@ angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requ
       var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
       chosenSeries.forEach(function(series){
         scope.instances = series.Instances;
-        loadStackImages();
-      })
-    }
-
-
-    function loadStackImages(){
-      var payload={};
-      payload.list = scope.instances;
-      Requests.get('orthanc/instances',payload,function(data){
-        console.log(data);
       })
     }
   }
@@ -619,7 +609,7 @@ angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(
 }]);
 
 
-angular.module('retsu.images').directive('dicomStack',['rmCornerstone',function(rmCornerstone) {
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
     return {
         controller: 'imagesCtrl',
         restrict:'EA',
