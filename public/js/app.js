@@ -119,6 +119,248 @@ angular.module("div").directive('isActiveLink', ['$location', function(
    $urlRouterProvider.otherwise("/admin/dashboard");
  });
 
+angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+  }
+])
+
+angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin', {
+    url: '/admin',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('admin/admin.main')
+      },
+      'admin.header@admin':{
+        templateUrl: VIEW._modules('admin/admin.header')
+      },
+      'admin.sidebar@admin':{
+        templateUrl: VIEW._modules('admin/admin.sidebar')
+      }
+    }
+  }).
+  state('admin.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        controller: 'adminCtrl',
+        templateUrl: VIEW._modules('admin/admin.dashboard')
+      }
+    }
+  })
+});
+
+angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
+  '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
+  function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
+    var patient = rootScope.patient;
+    scope.DICOM=[];
+
+    loadSeries();
+
+
+    function loadSeries(){
+      if(!rootScope.patient){
+        console.log('Empty')
+      }
+      else{
+        patient.series_list.forEach(function(series){
+          preview = series.Instances[0];
+          series = series.ID;
+          scope.DICOM.push({
+            'seriesID':series,
+            'previewID': preview
+          });
+        })
+      }
+    }
+
+    scope.loadStack = function(series){
+      scope.instances = [];
+      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
+      chosenSeries.forEach(function(series){
+        scope.instances = series.Instances;
+      })
+    }
+
+    scope.play = function play($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.playStack(dicomImage[0],$event.target)
+    }
+
+    scope.stop = function stop($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.stopStack(dicomImage[0],$event.target)
+    }
+  }
+])
+
+angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(rmCornerstone) {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        scope: {
+          loadStack:'&'
+        },
+        link: function (scope, element,attrs) {
+          rmCornerstone.loadImage(element[0],attrs.id)
+      }
+    }
+
+}]);
+
+
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        link: function (scope, element,attrs) {
+          rmCornerstone.loadViewPort(element[0],scope.instances);
+      }
+    }
+
+}]);
+
+angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.images', {
+    url: '/images',
+    views: {
+      '': {
+        controller:'imagesCtrl',
+        templateUrl: VIEW._modules('images/images.main')
+      },
+      'dicomImage@admin.images':{
+        templateUrl: VIEW._modules('images/dicom')
+      }
+    }
+  })
+});
+
+angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
+  '$state','$rootScope',
+  function(scope, Requests, state, rootScope) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+    get();
+    function get() {
+      var payload = {};
+      Requests.get('orthanc/patients', payload, function(data) {
+        rootScope.patients = data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.patient;
+      Requests.post('patients', payload, function(data) {
+        if(data.success){
+          state.go('admin.patients.list')
+        }
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.patient;
+      Requests.put('patients/' + payload.id, payload, function(data) {
+        scope.patient = data.success.data;
+      });
+    }
+
+    scope.view = function view(patient) {
+      rootScope.patient = patient;
+      state.go('admin.images')
+    }
+  }
+])
+
+angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.patients', {
+    url: '/patients',
+    views: {
+      '': {
+        controller: 'patientsCtrl',
+        templateUrl: VIEW._modules('patients/patients.main')
+      }
+    }
+  })
+  .state('admin.patients.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('patients/patients.dashboard')
+      },
+      'patients.list@admin.patients.dashboard':{
+        templateUrl: VIEW._modules('patients/patients.list')
+      }
+    }
+  })
+});
+
+angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+
+    function get() {
+      var payload = {};
+      Requests.get('questions', payload, function(data) {
+        scope.questions = data.success.data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.question;
+      Requests.post('questions', payload, function(data) {
+        if(data.success){
+          state.go('admin.questions.list')
+        }
+      });
+    }
+
+    scope.login = function login() {
+      var payload = scope.user;
+      Requests.post('auth', payload, function(data) {
+        if(data.success){
+          scope.user = data.user;
+          state.go('admin.questions.dashboard')
+        }
+
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.question;
+      Requests.put('questions/' + payload.id, payload, function(data) {
+        scope.question = data.success.data;
+      });
+    }
+
+    scope.view = function view(question) {
+      scope.currentQuestion = question;
+      state.go('questions.view')
+    }
+  }
+])
+
+angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('login', {
+    url: '/login',
+    views: {
+      '': {
+        controller: 'usersCtrl',
+        templateUrl: VIEW._modules('users/users.login')
+      }
+    }
+  })
+});
+
 angular.module('div').factory('ArrayHelper', function() {
 
   var ArrayHelper = {};
@@ -378,47 +620,81 @@ angular.module('div').factory('Requests', ['$http', '$rootScope', function(
 angular.module('div').factory('rmCornerstone',[function(element){
   var orthanc_url = 'http://orthanc.rufusmbugua.com/';
   var viewport = null;
+
+
+
+
   var rmCornerstone =
   {
     /**
-    * <author> Rufus Mbugua
-    * <email> mbuguarufus@gmail.com
-    * [loadImage description]
+    * [function description]
     * @param  {[type]} element [description]
     * @param  {[type]} image   [description]
     * @return {[type]}         [description]
     */
-
     loadImage : function(element,image){
       cornerstone.enable(element);
       cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
         cornerstone.displayImage(element, image);
       });
     },
-
-    loadViewPort : function (element,image){
+    /**
+    * [loadViewPort description]
+    * @param  {[type]} element [description]
+    * @param  {[type]} image   [description]
+    * @return {[type]}         [description]
+    */
+    loadViewPort : function (element,stackImages){
       viewport = element;
+      var imageIds = [];
+
+      stackImages.forEach(function(image){
+        imageIds.push('wadouri:'+orthanc_url+'/instances/'+image+'/file')
+      });
+      var stack = {
+        currentImageIdIndex : 0,
+        imageIds: imageIds
+      };
       cornerstone.enable(viewport);
-      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+image+'/file').then(function(image) {
+      cornerstone.loadImage('wadouri:'+orthanc_url+'/instances/'+stackImages[0]+'/file').then(function(image) {
         cornerstone.displayImage(viewport, image);
         // image enable the dicomImage element
         // Enable mouse and touch input
         cornerstoneTools.mouseInput.enable(viewport);
         cornerstoneTools.touchInput.enable(viewport);
+        cornerstoneTools.addStackStateManager(element, ['stack', 'playClip']);
+        cornerstoneTools.addToolState(element, 'stack', stack);
+        // Enable all tools we want to use with this element
+        cornerstoneTools.stackScroll.activate(element, 1);
+        cornerstoneTools.stackScrollWheel.activate(element);
+        cornerstoneTools.scrollIndicator.enable(element);
 
       });
       rmCornerstone.magnifyConfig(element);
       rmCornerstone.handleTools(element);
+      rmCornerstone.handleStack(element,stack,imageIds)
     },
-
+    /**
+    * [function description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
     resetViewPort: function(element){
       cornerstone.reset(element)
     },
-
+    /**
+    * [function description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
     disableViewPort: function(element){
       cornerstone.disable(element)
     },
-
+    /**
+    * [function description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
     magnifyConfig:function(element){
       var magLevelRange = $("#magLevelRange")
       magLevelRange.on("change", function() {
@@ -440,28 +716,47 @@ angular.module('div').factory('rmCornerstone',[function(element){
       // cornerstoneTools.arrowAnnotate.setConfiguration(config);
       cornerstoneTools.magnify.setConfiguration(mag_config);
     },
-
+    /**
+    * [disableTools description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
     disableTools:function disableTools(element){
       cornerstoneTools.zoomTouchDrag.disable(element);
-   cornerstoneTools.rotate.disable(element, 1);
-   cornerstoneTools.rotateTouchDrag.disable(element);
-   cornerstoneTools.zoom.disable(element, 1);
-   cornerstoneTools.length.disable(element, 1);
-   cornerstoneTools.arrowAnnotate.disable(element, 1);
-   cornerstoneTools.highlight.disable(element, 1);
-   cornerstoneTools.simpleAngle.disable(element, 1);
-   cornerstoneTools.simpleAngleTouch.disable(element);
-   cornerstoneTools.dragProbe.disable(element);
-   cornerstoneTools.dragProbeTouch.disable(element);
-   cornerstoneTools.freehand.disable(element);
-   cornerstoneTools.magnify.disable(element, 1);
-   cornerstoneTools.magnifyTouchDrag.disable(element);
+      cornerstoneTools.rotate.disable(element, 1);
+      cornerstoneTools.rotateTouchDrag.disable(element);
+      cornerstoneTools.zoom.disable(element, 1);
+      cornerstoneTools.length.disable(element, 1);
+      cornerstoneTools.arrowAnnotate.disable(element, 1);
+      cornerstoneTools.highlight.disable(element, 1);
+      cornerstoneTools.simpleAngle.disable(element, 1);
+      cornerstoneTools.simpleAngleTouch.disable(element);
+      cornerstoneTools.dragProbe.disable(element);
+      cornerstoneTools.dragProbeTouch.disable(element);
+      cornerstoneTools.freehand.disable(element);
+      cornerstoneTools.magnify.disable(element, 1);
+      cornerstoneTools.magnifyTouchDrag.disable(element);
+      // Enable all tools we want to use with this element
+      cornerstoneTools.stackScroll.disable(element);
+      cornerstoneTools.stackScrollWheel.disable(element);
+      cornerstoneTools.scrollIndicator.enable(element);
     },
-    activateTools: function(element){
+    /**
+    * [function description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
+  activateTools: function(element){
       rmCornerstone.disableTools(viewport);
       $('.btn').removeClass('active');
       $(element).addClass('active');
+      rmCornerstone.resetViewPort(viewport);
     },
+    /**
+    * [function description]
+    * @param  {[type]} element [description]
+    * @return {[type]}         [description]
+    */
     handleTools: function(element){
       // Zoom
       $('a#zoom').on('click touchstart', function() {
@@ -532,239 +827,87 @@ angular.module('div').factory('rmCornerstone',[function(element){
         cornerstoneTools.magnifyTouchDrag.activate(element);
         return false;
       })
+    },
+    handleStack : function(element, stack, imageIds){
+
+      function onViewportUpdated(e, data) {
+        var viewport = data.viewport;
+        $('#mrbottomleft').text("WW/WC: " + Math.round(viewport.voi.windowWidth) + "/" + Math.round(viewport.voi.windowCenter));
+        $('#zoomText').text("Zoom: " + viewport.scale.toFixed(2));
+      };
+
+      $(element).on("CornerstoneImageRendered", onViewportUpdated);
+      function onNewImage(e, data) {
+        var newImageIdIndex = stack.currentImageIdIndex;
+        // Update the slider value
+        var slider = document.getElementById('slice-range');
+        slider.value = newImageIdIndex;
+        // Populate the current slice span
+        var currentValueSpan = document.getElementById("sliceText");
+        currentValueSpan.textContent = "Image " + (newImageIdIndex + 1) + "/" + imageIds.length;
+        // if we are currently playing a clip then update the FPS
+        var playClipToolData = cornerstoneTools.getToolState(element, 'playClip');
+        if (playClipToolData !== undefined && !$.isEmptyObject(playClipToolData.data)) {
+          $("#frameRate").text("FPS: " + Math.round(data.frameRate));
+        } else {
+          if ($("#frameRate").text().length > 0) {
+            $("#frameRate").text("");
+          }
+        }
+      }
+      $(element).on("CornerstoneNewImage", onNewImage);
+      var loopCheckbox = $("#loop");
+      loopCheckbox.on('change', function() {
+        var playClipToolData = cornerstoneTools.getToolState(element, 'playClip');
+        playClipToolData.data[0].loop = loopCheckbox.is(":checked");
+      })
+
+      // Initialize range input
+      var range, max, slice, currentValueSpan;
+      range = document.getElementById('slice-range');
+      // Set minimum and maximum value
+      range.min = 0;
+      range.step = 1;
+      range.max = stack.imageIds.length - 1;
+      // Set current value
+      range.value = stack.currentImageIdIndex;
+      function selectImage(event){
+        var targetElement = document.getElementById("dicomImage");
+        // Get the range input value
+        var newImageIdIndex = parseInt(event.currentTarget.value, 10);
+        // Get the stack data
+        var stackToolDataSource = cornerstoneTools.getToolState(targetElement, 'stack');
+        if (stackToolDataSource === undefined) {
+          return;
+        }
+        var stackData = stackToolDataSource.data[0];
+        // Switch images, if necessary
+        if(newImageIdIndex !== stackData.currentImageIdIndex && stackData.imageIds[newImageIdIndex] !== undefined) {
+          cornerstone.loadAndCacheImage(stackData.imageIds[newImageIdIndex]).then(function(image) {
+            var viewport = cornerstone.getViewport(targetElement);
+            stackData.currentImageIdIndex = newImageIdIndex;
+            cornerstone.displayImage(targetElement, image, viewport);
+          });
+        }
+      }
+      // Bind the range slider events
+      $("#slice-range").on("input", selectImage);
+    },
+    playStack : function(element,button){
+
+      rmCornerstone.activateTools(button);
+      // Enable all tools we want to use with this element
+
+      cornerstoneTools.playClip(element, 3);
+      return false;
+    },
+    stopStack : function(element, button){
+      rmCornerstone.activateTools(button);
+      cornerstoneTools.stopClip(element);
+      $("#frameRate").text("");
+      return false;
     }
   }
+
   return rmCornerstone;
 }]);
-
-angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-  }
-])
-
-angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin', {
-    url: '/admin',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('admin/admin.main')
-      },
-      'admin.header@admin':{
-        templateUrl: VIEW._modules('admin/admin.header')
-      },
-      'admin.sidebar@admin':{
-        templateUrl: VIEW._modules('admin/admin.sidebar')
-      }
-    }
-  }).
-  state('admin.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        controller: 'adminCtrl',
-        templateUrl: VIEW._modules('admin/admin.dashboard')
-      }
-    }
-  })
-});
-
-angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
-  function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
-    var patient = rootScope.patient;
-    scope.DICOM=[];
-
-    loadSeries();
-
-
-    function loadSeries(){
-      if(!rootScope.patient){
-        console.log('Empty')
-      }
-      else{
-        patient.series_list.forEach(function(series){
-          preview = series.Instances[0];
-          series = series.ID;
-          scope.DICOM.push({
-            'seriesID':series,
-            'previewID': preview
-          });
-        })
-      }
-    }
-
-    scope.loadStack = function(series){
-      scope.instances = [];
-      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
-      chosenSeries.forEach(function(series){
-        scope.instances = series.Instances;
-      })
-    }
-  }
-])
-
-angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(rmCornerstone) {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        scope: {
-          loadStack:'&'
-        },
-        link: function (scope, element,attrs) {
-          rmCornerstone.loadImage(element[0],attrs.id)
-      }
-    }
-
-}]);
-
-
-angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        link: function (scope, element,attrs) {
-          rmCornerstone.loadViewPort(element[0],scope.instances[0])
-      }
-    }
-
-}]);
-
-angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.images', {
-    url: '/images',
-    views: {
-      '': {
-        controller:'imagesCtrl',
-        templateUrl: VIEW._modules('images/images.main')
-      },
-      'dicomImage@admin.images':{
-        templateUrl: VIEW._modules('images/dicom')
-      }
-    }
-  })
-});
-
-angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
-  '$state','$rootScope',
-  function(scope, Requests, state, rootScope) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-    get();
-    function get() {
-      var payload = {};
-      Requests.get('orthanc/patients', payload, function(data) {
-        rootScope.patients = data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.patient;
-      Requests.post('patients', payload, function(data) {
-        if(data.success){
-          state.go('admin.patients.list')
-        }
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.patient;
-      Requests.put('patients/' + payload.id, payload, function(data) {
-        scope.patient = data.success.data;
-      });
-    }
-
-    scope.view = function view(patient) {
-      rootScope.patient = patient;
-      state.go('admin.images')
-    }
-  }
-])
-
-angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.patients', {
-    url: '/patients',
-    views: {
-      '': {
-        controller: 'patientsCtrl',
-        templateUrl: VIEW._modules('patients/patients.main')
-      }
-    }
-  })
-  .state('admin.patients.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('patients/patients.dashboard')
-      },
-      'patients.list@admin.patients.dashboard':{
-        templateUrl: VIEW._modules('patients/patients.list')
-      }
-    }
-  })
-});
-
-angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-
-    function get() {
-      var payload = {};
-      Requests.get('questions', payload, function(data) {
-        scope.questions = data.success.data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.question;
-      Requests.post('questions', payload, function(data) {
-        if(data.success){
-          state.go('admin.questions.list')
-        }
-      });
-    }
-
-    scope.login = function login() {
-      var payload = scope.user;
-      Requests.post('auth', payload, function(data) {
-        if(data.success){
-          scope.user = data.user;
-          state.go('admin.questions.dashboard')
-        }
-
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.question;
-      Requests.put('questions/' + payload.id, payload, function(data) {
-        scope.question = data.success.data;
-      });
-    }
-
-    scope.view = function view(question) {
-      scope.currentQuestion = question;
-      state.go('questions.view')
-    }
-  }
-])
-
-angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('login', {
-    url: '/login',
-    views: {
-      '': {
-        controller: 'usersCtrl',
-        templateUrl: VIEW._modules('users/users.login')
-      }
-    }
-  })
-});

@@ -18,7 +18,7 @@ angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests
         controller: 'imagesCtrl',
         restrict:'EA',
         link: function (scope, element,attrs) {
-          rmCornerstone.loadViewPort(element[0],scope.instances[0])
+          rmCornerstone.loadViewPort(element[0],scope.instances);
       }
     }
 

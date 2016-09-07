@@ -6220,6 +6220,11 @@ p + p {
 h1 i, h2 i, h3 i, h4 i, h5 i, h6 i {
   padding-right: 5px; }
 
+.orange-header {
+  padding: 10px 15px;
+  background: #f0b67f;
+  color: white; }
+
 form.bordered {
   border: 1px solid #BFBFBF; }
 
@@ -6443,17 +6448,13 @@ ul.steps-indicator {
   font-size: 1em; }
 
 html, body {
-  height: 100%;
-  overflow-y: hidden; }
+  height: 100%; }
   html > div, body > div {
-    height: 100%;
-    overflow-y: hidden; }
+    height: 100%; }
     html > div > div, body > div > div {
-      height: 100%;
-      overflow-y: hidden; }
+      height: 100%; }
       html > div > div > div.row, .content.main html > div > div > div.form-group, form html > div > div > div.form-group, body > div > div > div.row, .content.main body > div > div > div.form-group, form body > div > div > div.form-group {
-        height: 100%;
-        overflow-y: hidden; }
+        height: 100%; }
         html > div > div > div.row > .main, .content.main html > div > div > div.form-group > .main, form html > div > div > div.form-group > .main, body > div > div > div.row > .main, .content.main body > div > div > div.form-group > .main, form body > div > div > div.form-group > .main {
           overflow-y: auto; }
 
@@ -6646,6 +6647,10 @@ p.null-message {
     height: 100px; }
     .dicomList li a:hover {
       background: transparent; }
+
+.overlay {
+  z-index: 1000;
+  color: #f0b67f; }
 
 table {
   margin-bottom: 0 !important;

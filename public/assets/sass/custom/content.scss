@@ -1,16 +1,12 @@
 // Body
 html,body{
   height:100%;
-  overflow-y:hidden;
   > div{
     height:100%;
-    overflow-y:hidden;
     > div{
       height:100%;
-      overflow-y:hidden;
       > div.row{
         height:100%;
-        overflow-y:hidden;
         > .main{
           overflow-y:auto;
         }
@@ -262,4 +258,10 @@ p.null-message{
       }
     }
   }
+}
+
+// Overlays
+.overlay{
+  z-index:1000;
+  color:$mellow-apricot;
 }

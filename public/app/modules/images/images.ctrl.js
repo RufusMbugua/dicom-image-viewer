@@ -30,5 +30,15 @@ angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requ
         scope.instances = series.Instances;
       })
     }
+
+    scope.play = function play($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.playStack(dicomImage[0],$event.target)
+    }
+
+    scope.stop = function stop($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.stopStack(dicomImage[0],$event.target)
+    }
   }
 ])
