@@ -1,10 +1,10 @@
 .row
- .col-xs-3
+ .col-xs-2
   .orange-header Series
   ul.nav.nav-pills.nav-stacked.dicomList
     li(ng-repeat="image in DICOM")
      a(id="{{image.previewID}}",ng-click="loadStack(image.seriesID)",dicom-image="")
- .col-md-9
+ .col-md-10
   .inner(style="height:400px")
    .action
     .buttons
@@ -50,17 +50,17 @@
        a.relabelConfirm.btn.small.blue OK
        
 .row(style="border-top:1px solid #ddd;padding-top:1em")
-  .col-xs-3
-    .card-sm
-      .inner
-        h5 Comments
-          i.fa.fa-comments
-        ul(ng-if="comments && comments.length>0")
-          li(ng-repeat="comment in comments")
-        div(ng-if="!comments || comments.length==0")
-          a.btn.btn-primary(style="margin-bottom:0.5em") #[i.ion-plus]
-          p.alert.alert-info
-            span(ng-bind-html="trustAsHtml(errorList.no_comments)")
+  //- .col-xs-3
+  //-   .card-sm
+  //-     .inner
+  //-       h5 Comments
+  //-         i.fa.fa-comments
+  //-       ul(ng-if="comments && comments.length>0")
+  //-         li(ng-repeat="comment in comments")
+  //-       div(ng-if="!comments || comments.length==0")
+  //-         a.btn.btn-primary(style="margin-bottom:0.5em") #[i.ion-plus]
+  //-         p.alert.alert-info
+  //-           span(ng-bind-html="trustAsHtml(errorList.no_comments)")
   .col-xs-9.row
     .card-sm
       .inner.row

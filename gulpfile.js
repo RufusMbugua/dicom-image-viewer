@@ -9,6 +9,7 @@ var sass = require('gulp-sass');
 var refresh = require('gulp-refresh')
 var rename = require("gulp-rename");
 var jade = require("gulp-jade");
+var docco = require("gulp-docco");
 
 var paths = {
   scripts: 'public/app/**/*.js',
@@ -42,7 +43,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('sass', function () {
-  return gulp.src('./public/assets/sass/styles.scss')
+  return gulp.src('./public/assets/sass/stylesheets.scss')
   .pipe(sass().on('error', sass.logError))
   .pipe(gulp.dest('./public/css'))
   .pipe(refresh());
@@ -103,6 +104,16 @@ gulp.task('templates', function() {
     )
     .pipe(gulp.dest('./public/app/modules/images/'))
   });
+
+
+  gulp.task('doc:backend',function(){
+    var options = {
+      css: "./documentation/backend/docco.css"
+    }
+    gulp.src("./app/controllers/*.js")
+    .pipe(docco(options))
+    .pipe(gulp.dest('./documentation/backend'));
+  })
 
   // Default Task
   gulp.task('default', ['templates', 'bower', 'move_fonts','scripts','sass']);

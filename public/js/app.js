@@ -119,248 +119,6 @@ angular.module("div").directive('isActiveLink', ['$location', function(
    $urlRouterProvider.otherwise("/admin/dashboard");
  });
 
-angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-  }
-])
-
-angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin', {
-    url: '/admin',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('admin/admin.main')
-      },
-      'admin.header@admin':{
-        templateUrl: VIEW._modules('admin/admin.header')
-      },
-      'admin.sidebar@admin':{
-        templateUrl: VIEW._modules('admin/admin.sidebar')
-      }
-    }
-  }).
-  state('admin.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        controller: 'adminCtrl',
-        templateUrl: VIEW._modules('admin/admin.dashboard')
-      }
-    }
-  })
-});
-
-angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
-  '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
-  function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
-    var patient = rootScope.patient;
-    scope.DICOM=[];
-
-    loadSeries();
-
-
-    function loadSeries(){
-      if(!rootScope.patient){
-        console.log('Empty')
-      }
-      else{
-        patient.series_list.forEach(function(series){
-          preview = series.Instances[0];
-          series = series.ID;
-          scope.DICOM.push({
-            'seriesID':series,
-            'previewID': preview
-          });
-        })
-      }
-    }
-
-    scope.loadStack = function(series){
-      scope.instances = [];
-      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
-      chosenSeries.forEach(function(series){
-        scope.instances = series.Instances;
-      })
-    }
-
-    scope.play = function play($event){
-      var dicomImage = $('#dicomImage');
-      rmCornerstone.playStack(dicomImage[0],$event.target)
-    }
-
-    scope.stop = function stop($event){
-      var dicomImage = $('#dicomImage');
-      rmCornerstone.stopStack(dicomImage[0],$event.target)
-    }
-  }
-])
-
-angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(rmCornerstone) {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        scope: {
-          loadStack:'&'
-        },
-        link: function (scope, element,attrs) {
-          rmCornerstone.loadImage(element[0],attrs.id)
-      }
-    }
-
-}]);
-
-
-angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
-    return {
-        controller: 'imagesCtrl',
-        restrict:'EA',
-        link: function (scope, element,attrs) {
-          rmCornerstone.loadViewPort(element[0],scope.instances);
-      }
-    }
-
-}]);
-
-angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.images', {
-    url: '/images',
-    views: {
-      '': {
-        controller:'imagesCtrl',
-        templateUrl: VIEW._modules('images/images.main')
-      },
-      'dicomImage@admin.images':{
-        templateUrl: VIEW._modules('images/dicom')
-      }
-    }
-  })
-});
-
-angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
-  '$state','$rootScope',
-  function(scope, Requests, state, rootScope) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-    get();
-    function get() {
-      var payload = {};
-      Requests.get('orthanc/patients', payload, function(data) {
-        rootScope.patients = data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.patient;
-      Requests.post('patients', payload, function(data) {
-        if(data.success){
-          state.go('admin.patients.list')
-        }
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.patient;
-      Requests.put('patients/' + payload.id, payload, function(data) {
-        scope.patient = data.success.data;
-      });
-    }
-
-    scope.view = function view(patient) {
-      rootScope.patient = patient;
-      state.go('admin.images')
-    }
-  }
-])
-
-angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin.patients', {
-    url: '/patients',
-    views: {
-      '': {
-        controller: 'patientsCtrl',
-        templateUrl: VIEW._modules('patients/patients.main')
-      }
-    }
-  })
-  .state('admin.patients.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('patients/patients.dashboard')
-      },
-      'patients.list@admin.patients.dashboard':{
-        templateUrl: VIEW._modules('patients/patients.list')
-      }
-    }
-  })
-});
-
-angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-
-    function get() {
-      var payload = {};
-      Requests.get('questions', payload, function(data) {
-        scope.questions = data.success.data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.question;
-      Requests.post('questions', payload, function(data) {
-        if(data.success){
-          state.go('admin.questions.list')
-        }
-      });
-    }
-
-    scope.login = function login() {
-      var payload = scope.user;
-      Requests.post('auth', payload, function(data) {
-        if(data.success){
-          scope.user = data.user;
-          state.go('admin.questions.dashboard')
-        }
-
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.question;
-      Requests.put('questions/' + payload.id, payload, function(data) {
-        scope.question = data.success.data;
-      });
-    }
-
-    scope.view = function view(question) {
-      scope.currentQuestion = question;
-      state.go('questions.view')
-    }
-  }
-])
-
-angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('login', {
-    url: '/login',
-    views: {
-      '': {
-        controller: 'usersCtrl',
-        templateUrl: VIEW._modules('users/users.login')
-      }
-    }
-  })
-});
-
 angular.module('div').factory('ArrayHelper', function() {
 
   var ArrayHelper = {};
@@ -911,3 +669,245 @@ angular.module('div').factory('rmCornerstone',[function(element){
 
   return rmCornerstone;
 }]);
+
+angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
+  '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
+  function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
+    var patient = rootScope.patient;
+    scope.DICOM=[];
+
+    loadSeries();
+
+
+    function loadSeries(){
+      if(!rootScope.patient){
+        console.log('Empty')
+      }
+      else{
+        patient.series_list.forEach(function(series){
+          preview = series.Instances[0];
+          series = series.ID;
+          scope.DICOM.push({
+            'seriesID':series,
+            'previewID': preview
+          });
+        })
+      }
+    }
+
+    scope.loadStack = function(series){
+      scope.instances = [];
+      var chosenSeries = rmFilter.where(patient.series_list,{ID:series})
+      chosenSeries.forEach(function(series){
+        scope.instances = series.Instances;
+      })
+    }
+
+    scope.play = function play($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.playStack(dicomImage[0],$event.target)
+    }
+
+    scope.stop = function stop($event){
+      var dicomImage = $('#dicomImage');
+      rmCornerstone.stopStack(dicomImage[0],$event.target)
+    }
+  }
+])
+
+angular.module('retsu.images').directive('dicomImage',['rmCornerstone',function(rmCornerstone) {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        scope: {
+          loadStack:'&'
+        },
+        link: function (scope, element,attrs) {
+          rmCornerstone.loadImage(element[0],attrs.id)
+      }
+    }
+
+}]);
+
+
+angular.module('retsu.images').directive('dicomStack',['rmCornerstone','Requests',function(rmCornerstone,Requests) {
+    return {
+        controller: 'imagesCtrl',
+        restrict:'EA',
+        link: function (scope, element,attrs) {
+          rmCornerstone.loadViewPort(element[0],scope.instances);
+      }
+    }
+
+}]);
+
+angular.module('retsu.images').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.images', {
+    url: '/images',
+    views: {
+      '': {
+        controller:'imagesCtrl',
+        templateUrl: VIEW._modules('images/images.main')
+      },
+      'dicomImage@admin.images':{
+        templateUrl: VIEW._modules('images/dicom')
+      }
+    }
+  })
+});
+
+angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+  }
+])
+
+angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin', {
+    url: '/admin',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('admin/admin.main')
+      },
+      'admin.header@admin':{
+        templateUrl: VIEW._modules('admin/admin.header')
+      },
+      'admin.sidebar@admin':{
+        templateUrl: VIEW._modules('admin/admin.sidebar')
+      }
+    }
+  }).
+  state('admin.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        controller: 'adminCtrl',
+        templateUrl: VIEW._modules('admin/admin.dashboard')
+      }
+    }
+  })
+});
+
+angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
+  '$state','$rootScope',
+  function(scope, Requests, state, rootScope) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+    get();
+    function get() {
+      var payload = {};
+      Requests.get('orthanc/patients', payload, function(data) {
+        rootScope.patients = data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.patient;
+      Requests.post('patients', payload, function(data) {
+        if(data.success){
+          state.go('admin.patients.list')
+        }
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.patient;
+      Requests.put('patients/' + payload.id, payload, function(data) {
+        scope.patient = data.success.data;
+      });
+    }
+
+    scope.view = function view(patient) {
+      rootScope.patient = patient;
+      state.go('admin.images')
+    }
+  }
+])
+
+angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin.patients', {
+    url: '/patients',
+    views: {
+      '': {
+        controller: 'patientsCtrl',
+        templateUrl: VIEW._modules('patients/patients.main')
+      }
+    }
+  })
+  .state('admin.patients.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('patients/patients.dashboard')
+      },
+      'patients.list@admin.patients.dashboard':{
+        templateUrl: VIEW._modules('patients/patients.list')
+      }
+    }
+  })
+});
+
+angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+
+    function get() {
+      var payload = {};
+      Requests.get('questions', payload, function(data) {
+        scope.questions = data.success.data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.question;
+      Requests.post('questions', payload, function(data) {
+        if(data.success){
+          state.go('admin.questions.list')
+        }
+      });
+    }
+
+    scope.login = function login() {
+      var payload = scope.user;
+      Requests.post('auth', payload, function(data) {
+        if(data.success){
+          scope.user = data.user;
+          state.go('admin.questions.dashboard')
+        }
+
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.question;
+      Requests.put('questions/' + payload.id, payload, function(data) {
+        scope.question = data.success.data;
+      });
+    }
+
+    scope.view = function view(question) {
+      scope.currentQuestion = question;
+      state.go('questions.view')
+    }
+  }
+])
+
+angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('login', {
+    url: '/login',
+    views: {
+      '': {
+        controller: 'usersCtrl',
+        templateUrl: VIEW._modules('users/users.login')
+      }
+    }
+  })
+});
