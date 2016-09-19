@@ -8,9 +8,6 @@ angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider
       },
       'admin.header@admin':{
         templateUrl: VIEW._modules('admin/admin.header')
-      },
-      'admin.sidebar@admin':{
-        templateUrl: VIEW._modules('admin/admin.sidebar')
       }
     }
   }).

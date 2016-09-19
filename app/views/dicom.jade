@@ -1,11 +1,11 @@
 .row
- .col-xs-2
+ .col-xs-1.no-padding
   .orange-header Series
   ul.nav.nav-pills.nav-stacked.dicomList
     li(ng-repeat="image in DICOM")
      a(id="{{image.previewID}}",ng-click="loadStack(image.seriesID)",dicom-image="")
- .col-md-10
-  .inner(style="height:400px")
+ .col-md-11.no-padding
+  .inner(style="height:600px")
    .action
     .buttons
      a.btn.btn-sm.btn-warning#invert(title="Invert") #[i.fa.fa-adjust]
@@ -21,7 +21,7 @@
      a.btn.btn-sm.btn-warning#play(title="Play",ng-click="play($event)") #[i.ion-play]
      a.btn.btn-sm.btn-warning#stop(title="Stop",ng-click="stop($event)") #[i.ion-stop]
      a.btn.btn-sm.btn-warning#save(title="Save") #[i.fa.fa-hdd-o]
-   #mainContainer(style="position:relative;height:350px;width:100%") 
+   #mainContainer(style="position:relative;height:550px;width:100%") 
      #dicomImage(style="height:100%",ng-if="instances",dicom-stack="")
      div.overlay#mrtopleft(style="position:absolute;top:3px;left:3px",ng-if="instances") Patient Name              
      div.overlay#mrtopright(style="position:absolute;top:3px;right:3px",ng-if="instances") Hospital  
@@ -50,34 +50,15 @@
        a.relabelConfirm.btn.small.blue OK
        
 .row(style="border-top:1px solid #ddd;padding-top:1em")
-  //- .col-xs-3
-  //-   .card-sm
-  //-     .inner
-  //-       h5 Comments
-  //-         i.fa.fa-comments
-  //-       ul(ng-if="comments && comments.length>0")
-  //-         li(ng-repeat="comment in comments")
-  //-       div(ng-if="!comments || comments.length==0")
-  //-         a.btn.btn-primary(style="margin-bottom:0.5em") #[i.ion-plus]
-  //-         p.alert.alert-info
-  //-           span(ng-bind-html="trustAsHtml(errorList.no_comments)")
-  .col-xs-9.row
+  .col-xs-12
     .card-sm
-      .inner.row
-        h5 Actions #[i.ion-paintbrush]
-        .col-xs-4
-          .inner(style="padding:0 20px")
-           label(for="filename") Save as:
-           input#filename.form-control(type="text",value="cornerstone.png")
-        .col-xs-4
-          .inner
-           .col-1-2
-             label(for="magLevelRange") Magnification Level
-             input(id="magLevelRange",type="range",min="1",value="2",max="10")
-           .col-1-2
-             label(for="magSizeRange") Magnifying glass size
-             input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
-           .col-1-2
-             input#loop(type="checkbox",checked)
-             label(for="slice-range") Stack Range
-             input#slice-range(type="range")
+      .inner
+        h5 Comments
+          i.fa.fa-comments
+        ul(ng-if="comments && comments.length>0")
+          li(ng-repeat="comment in comments")
+        div(ng-if="!comments || comments.length==0")
+          a.btn.btn-primary(style="margin-bottom:0.5em") #[i.ion-plus]
+          p.alert.alert-info
+            span(ng-bind-html="trustAsHtml(errorList.no_comments)")
+  

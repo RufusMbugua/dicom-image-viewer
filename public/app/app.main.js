@@ -2,7 +2,6 @@ angular.module("div", [
   'ui.router',
   'restangular',
   'smart-table',
-  'chart.js',
   'textAngular',
   'angularMoment',
   'ui.bootstrap',
