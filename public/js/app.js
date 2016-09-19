@@ -115,7 +115,7 @@ angular.module("div").directive('isActiveLink', ['$location', function(
  * @param $urlRouterProvider {service}
  */
  angular.module("div").config(function($stateProvider, $urlRouterProvider) {
-   $urlRouterProvider.otherwise("/admin/patients");
+   $urlRouterProvider.otherwise("/admin/patients/dashboard");
  });
 
 angular.module('div').factory('ArrayHelper', function() {
