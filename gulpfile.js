@@ -43,7 +43,7 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('sass', function () {
-  return gulp.src('./public/assets/sass/stylesheets.scss')
+  return gulp.src('./public/assets/sass/styles.scss')
   .pipe(sass().on('error', sass.logError))
   .pipe(gulp.dest('./public/css'))
   .pipe(refresh());

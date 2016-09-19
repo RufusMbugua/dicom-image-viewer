@@ -278,3 +278,6 @@ nav#footer{
     }
   }
 }
+.actionHeader{
+  @extend .alert-info;
+}

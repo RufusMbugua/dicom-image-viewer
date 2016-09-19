@@ -9,6 +9,9 @@ angular.module('retsu.images').config(function($stateProvider, $urlRouterProvide
       },
       'dicomImage@admin.images':{
         templateUrl: VIEW._modules('images/dicom')
+      },
+      'actionHeader@admin.images':{
+        templateUrl: VIEW._modules('images/images.header')
       }
     }
   })

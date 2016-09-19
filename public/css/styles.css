@@ -4107,13 +4107,13 @@ a.thumbnail.active {
   .alert-success .alert-link {
     color: #2b542c; }
 
-.alert-info, .instruction {
+.alert-info, .actionHeader, .instruction {
   background-color: #d9edf7;
   border-color: #bce8f1;
   color: #31708f; }
-  .alert-info hr, .instruction hr {
+  .alert-info hr, .actionHeader hr, .instruction hr {
     border-top-color: #a6e1ec; }
-  .alert-info .alert-link, .instruction .alert-link {
+  .alert-info .alert-link, .actionHeader .alert-link, .instruction .alert-link {
     color: #245269; }
 
 .alert-warning {
@@ -5690,9 +5690,10 @@ a:hover {
 nav {
   margin-bottom: 0 !important; }
   nav a.navicon {
+    padding: 8px;
     float: left; }
     nav a.navicon .ion-navicon {
-      font-size: 1.8em; }
+      font-size: 2em; }
     nav a.navicon:hover {
       color: #B8C480; }
       nav a.navicon:hover .i {
@@ -6221,7 +6222,7 @@ h1 i, h2 i, h3 i, h4 i, h5 i, h6 i {
   padding-right: 5px; }
 
 .orange-header {
-  padding: 10px 15px;
+  padding: 12px 15px;
   background: #f0b67f;
   color: white; }
 
@@ -6651,6 +6652,9 @@ p.null-message {
 .overlay {
   z-index: 1000;
   color: #f0b67f; }
+
+.no-padding {
+  padding: 0; }
 
 table {
   margin-bottom: 0 !important;
