@@ -1,9 +1,10 @@
 nav{
   margin-bottom:0 !important;
   a.navicon{
+    padding:8px;
     float:left;
     .ion-navicon{
-      font-size:1.8em;
+      font-size:2em;
     }
     &:hover{
       color:$sage;
