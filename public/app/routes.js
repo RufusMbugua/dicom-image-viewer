@@ -6,5 +6,5 @@
  * @param $urlRouterProvider {service}
  */
  angular.module("div").config(function($stateProvider, $urlRouterProvider) {
-   $urlRouterProvider.otherwise("/admin/dashboard");
+   $urlRouterProvider.otherwise("/admin/patients");
  });
