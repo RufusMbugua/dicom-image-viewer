@@ -1,0 +1,14 @@
+table{
+  @extend .table;
+  margin-bottom: 0 !important;
+  background:white;
+  .btn{
+    @extend .btn-sm;
+    margin-bottom:0 !important;
+  }
+  tfoot{
+    th{
+      color:$light-gray;
+    }
+  }
+}

@@ -8,12 +8,20 @@ var bodyParser = require('body-parser');
 var app = express();
 var assets = require('connect-assets');
 
+var Changelog = require('generate-changelog');
+var Fs        = require('fs');
+
+
+
+
 app.use(assets({
   paths: [
-    'bower_components',
-    'public/app',
-    'public/styles',
-    'public/scripts'
+    'public/libs/js',
+    'public/libs/css',
+    'public/js',
+    'public/css',
+    'public/scripts',
+    'public/assets/images'
   ]
 }));
 
@@ -80,12 +88,9 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var fs = require("fs");
-var browserify = require("browserify");
-browserify("./public/app/charts/line.js")
-  .transform("babelify", {presets: ["es2015", "react"]})
-  .bundle()
-  .pipe(fs.createWriteStream("./public/scripts/bundle.js"));
-
-
 module.exports = app;
+
+Changelog.generate({ patch: true, repoUrl: 'https://gitlab.com/rufusmbugua/dicom-image-parser' })
+.then(function (changelog) {
+  Fs.writeFileSync('./CHANGELOG.md', changelog);
+});

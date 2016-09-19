@@ -1,25 +1,38 @@
-extends layouts/main
-
-block content
-  .autogrid
-   .col.chart
-    .inner(style="height:450px")
-     .action
-      .buttons
-       a.btn.small.solid.red#invert(title="Invert") #[i.fa.fa-adjust]
-       a.btn.small.solid.red#rotate(title="Rotate") #[i.ion-arrow-return-right]
-       a.btn.small.solid.red#zoom(title="Zoom") #[i.fa.fa-search]
-       a.btn.small.solid.red#magnify(title="Magnify") #[i.fa.fa-search-plus]
-       a.btn.small.solid.red#length(title="Length") #[i.fa.fa-arrows-h]
-       a.btn.small.solid.red#annotate(title="Annotate") #[i.fa.fa-commenting]
-       a.btn.small.solid.red#angle(title="Angle") #[i.fa.fa-pencil-square-o]
-       a.btn.small.solid.red#highlight(title="Highlight") #[i.ion-edit]
-       a.btn.small.solid.red#dragProbe(title="Drag & Probe") #[i.fa.fa-hand-paper-o]
-       a.btn.small.solid.red#freehand(title="Freehand") #[i.fa.fa-hand-lizard-o]
-       a.btn.small.solid.red#play(title="Play") #[i.ion-play]
-       a.btn.small.solid.red#stop(title="Stop") #[i.ion-stop]
-       a.btn.small.solid.red#save(title="Save") #[i.fa.fa-hdd-o]
-     #dicomImage(style="height:400px")
+.row
+ .col-xs-2
+  .orange-header Series
+  ul.nav.nav-pills.nav-stacked.dicomList
+    li(ng-repeat="image in DICOM")
+     a(id="{{image.previewID}}",ng-click="loadStack(image.seriesID)",dicom-image="")
+ .col-md-10
+  .inner(style="height:400px")
+   .action
+    .buttons
+     a.btn.btn-sm.btn-warning#invert(title="Invert") #[i.fa.fa-adjust]
+     a.btn.btn-sm.btn-warning#rotate(title="Rotate") #[i.ion-arrow-return-right]
+     a.btn.btn-sm.btn-warning#zoom(title="Zoom") #[i.fa.fa-search]
+     a.btn.btn-sm.btn-warning#magnify(title="Magnify") #[i.fa.fa-search-plus]
+     a.btn.btn-sm.btn-warning#length(title="Length") #[i.fa.fa-arrows-h]
+     a.btn.btn-sm.btn-warning#annotate(title="Annotate") #[i.fa.fa-comments]
+     a.btn.btn-sm.btn-warning#angle(title="Angle") #[i.fa.fa-pencil-square-o]
+     a.btn.btn-sm.btn-warning#highlight(title="Highlight") #[i.ion-edit]
+     a.btn.btn-sm.btn-warning#dragProbe(title="Drag & Probe") #[i.fa.fa-hand-paper-o]
+     a.btn.btn-sm.btn-warning#freehand(title="Freehand") #[i.fa.fa-hand-lizard-o]
+     a.btn.btn-sm.btn-warning#play(title="Play",ng-click="play($event)") #[i.ion-play]
+     a.btn.btn-sm.btn-warning#stop(title="Stop",ng-click="stop($event)") #[i.ion-stop]
+     a.btn.btn-sm.btn-warning#save(title="Save") #[i.fa.fa-hdd-o]
+   #mainContainer(style="position:relative;height:350px;width:100%") 
+     #dicomImage(style="height:100%",ng-if="instances",dicom-stack="")
+     div.overlay#mrtopleft(style="position:absolute;top:3px;left:3px",ng-if="instances") Patient Name              
+     div.overlay#mrtopright(style="position:absolute;top:3px;right:3px",ng-if="instances") Hospital  
+     div.overlay#mrbottomright(style="position:absolute;bottom:6px;right:3px",ng-if="instances")
+      div#frameRate
+      div#zoomText Zoom: 
+      div#sliceText Image: 
+     div.overlay#mrbottomleft(style="position:absolute;bottom:3px;left:3px",ng-if="instances") WW/WC:
+                          
+     p.alert.alert-info(ng-if="!instances || instances.length==0")
+       span(ng-bind-html="trustAsHtml(errorList.no_series_selected)")
      
      dialog.annotationDialog
       h5 Enter your annotation
@@ -36,21 +49,35 @@ block content
        a.relabelRemove.btn.small.solid.red Remove marker
        a.relabelConfirm.btn.small.blue OK
        
-  .autogrid
-    .col
-      .inner(style="padding:0 20px")
-       label(for="filename") Save as:
-       input#filename(type="text",value="cornerstone.png")
-    .col
-      .inner
-       .col-1-2
-         label(for="magLevelRange") Magnification Level
-         input(id="magLevelRange",type="range",min="1",value="2",max="10")
-       .col-1-2
-         label(for="magSizeRange") Magnifying glass size
-         input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
-       
-       
-     
-     
-    
+.row(style="border-top:1px solid #ddd;padding-top:1em")
+  //- .col-xs-3
+  //-   .card-sm
+  //-     .inner
+  //-       h5 Comments
+  //-         i.fa.fa-comments
+  //-       ul(ng-if="comments && comments.length>0")
+  //-         li(ng-repeat="comment in comments")
+  //-       div(ng-if="!comments || comments.length==0")
+  //-         a.btn.btn-primary(style="margin-bottom:0.5em") #[i.ion-plus]
+  //-         p.alert.alert-info
+  //-           span(ng-bind-html="trustAsHtml(errorList.no_comments)")
+  .col-xs-9.row
+    .card-sm
+      .inner.row
+        h5 Actions #[i.ion-paintbrush]
+        .col-xs-4
+          .inner(style="padding:0 20px")
+           label(for="filename") Save as:
+           input#filename.form-control(type="text",value="cornerstone.png")
+        .col-xs-4
+          .inner
+           .col-1-2
+             label(for="magLevelRange") Magnification Level
+             input(id="magLevelRange",type="range",min="1",value="2",max="10")
+           .col-1-2
+             label(for="magSizeRange") Magnifying glass size
+             input#magSizeRange(type="range",min="100",value="225",max="300",step="25")
+           .col-1-2
+             input#loop(type="checkbox",checked)
+             label(for="slice-range") Stack Range
+             input#slice-range(type="range")

@@ -1,0 +1,34 @@
+<div class="inner card-sm">
+  <table>
+    <thead>
+      <tr>
+        <th ng-repeat="(k,v) in patients[0]" ng-if="k!='createdAt' && k!='id' && k!='created_at' && k!='series_list' ">
+          <span ng-bind="k.toUpperCase().replace('_',' ')"></span>
+        </th>
+        <th>
+          Actions
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="patient in patients">
+        <td ng-repeat="(k,v) in patient" ng-if="k!='createdAt' && k!='id' && k!='created_at' && k!='series_list' ">
+          <span ng-bind="v"></span>
+        </td>
+        <td>
+          <button ng-click="view(patient)" type="button" name="button" class="btn btn-link"><i class="ion-eye"></i>View</button>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th ng-repeat="(k,v) in patients[0]" ng-if="k!='createdAt' && k!='id' && k!='created_at' && k!='series_list' ">
+          <span ng-bind="k.toUpperCase().replace('_',' ')"></span>
+        </th>
+        <th>
+          Actions
+        </th>
+      </tr>
+    </tfoot>
+  </table>
+</div>

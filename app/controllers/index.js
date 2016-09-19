@@ -1,22 +1,23 @@
+// # Main Routes
+// Package Initialization
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 
-/* GET home page. */
+// ## Default Route `/`
 router.get('/', function(req, res, next) {
+  // Render the `index.jade` view
   res.render('index', {
+    // Set the `title` attribute
     title: 'DIV'
   });
 });
-router.get('/dicom', function(req, res, next) {
-  res.render('dicom', {
-    title: 'DIV : Images'
-  });
-});
 
-router.get('/patients', function(req, res, next) {
-  res.render('patients', {
-    title: 'DIV : Patients'
-  });
+router.get('/documentation', function(req, res, next) {
+  options = {
+    root:'./documentation/backend/'
+  }
+  res.sendFile('orthanc.html',options)
 });
 
 module.exports = router;
