@@ -1,6 +1,9 @@
-<div class="padded content" ng-controller="imagesCtrl">
+<div class="content" ng-controller="imagesCtrl">
+  <div ng-if="patient" class="row">
+    <div class="no-padding col-xs-12" ui-view="actionHeader"></div>
+  </div>
   <div class="row">
-    <div ng-if="patient" ui-view="dicomImage" class="col-md-12">
+    <div ng-if="patient" ui-view="dicomImage" class="no-padding col-md-12">
     </div>
     <div ng-if="!patient">
       <p class="alert alert-info">

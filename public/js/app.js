@@ -16,7 +16,6 @@ angular.module("div", [
   'ui.router',
   'restangular',
   'smart-table',
-  'chart.js',
   'textAngular',
   'angularMoment',
   'ui.bootstrap',
@@ -670,6 +669,36 @@ angular.module('div').factory('rmCornerstone',[function(element){
   return rmCornerstone;
 }]);
 
+angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+  }
+])
+
+angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('admin', {
+    url: '/admin',
+    views: {
+      '': {
+        templateUrl: VIEW._modules('admin/admin.main')
+      },
+      'admin.header@admin':{
+        templateUrl: VIEW._modules('admin/admin.header')
+      }
+    }
+  }).
+  state('admin.dashboard', {
+    url: '/dashboard',
+    views: {
+      '': {
+        controller: 'adminCtrl',
+        templateUrl: VIEW._modules('admin/admin.dashboard')
+      }
+    }
+  })
+});
+
 angular.module('retsu.images',['div']).controller('imagesCtrl', ['$scope', 'Requests',
   '$state','$rootScope','rmFilter','errorMessage','rmCornerstone',
   function(scope, Requests, state, rootScope, rmFilter,errorMessage,rmCornerstone) {
@@ -752,39 +781,9 @@ angular.module('retsu.images').config(function($stateProvider, $urlRouterProvide
       },
       'dicomImage@admin.images':{
         templateUrl: VIEW._modules('images/dicom')
-      }
-    }
-  })
-});
-
-angular.module('retsu.admin',[]).controller('adminCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-  }
-])
-
-angular.module('retsu.admin').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('admin', {
-    url: '/admin',
-    views: {
-      '': {
-        templateUrl: VIEW._modules('admin/admin.main')
       },
-      'admin.header@admin':{
-        templateUrl: VIEW._modules('admin/admin.header')
-      },
-      'admin.sidebar@admin':{
-        templateUrl: VIEW._modules('admin/admin.sidebar')
-      }
-    }
-  }).
-  state('admin.dashboard', {
-    url: '/dashboard',
-    views: {
-      '': {
-        controller: 'adminCtrl',
-        templateUrl: VIEW._modules('admin/admin.dashboard')
+      'actionHeader@admin.images':{
+        templateUrl: VIEW._modules('images/images.header')
       }
     }
   })
