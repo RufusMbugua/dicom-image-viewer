@@ -16,7 +16,6 @@ angular.module("div", [
   'ui.router',
   'restangular',
   'smart-table',
-  'chart.js',
   'textAngular',
   'angularMoment',
   'ui.bootstrap',
@@ -790,67 +789,6 @@ angular.module('retsu.images').config(function($stateProvider, $urlRouterProvide
   })
 });
 
-angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
-  '$state',
-  function(scope, Requests, state) {
-    scope.user = {};
-
-    scope.filterOptions = ['Date', 'Tags'];
-
-    function get() {
-      var payload = {};
-      Requests.get('questions', payload, function(data) {
-        scope.questions = data.success.data;
-      });
-    }
-
-    scope.add = function add() {
-      var payload = scope.question;
-      Requests.post('questions', payload, function(data) {
-        if(data.success){
-          state.go('admin.questions.list')
-        }
-      });
-    }
-
-    scope.login = function login() {
-      var payload = scope.user;
-      Requests.post('auth', payload, function(data) {
-        if(data.success){
-          scope.user = data.user;
-          state.go('admin.questions.dashboard')
-        }
-
-      });
-    }
-
-    scope.edit = function edit() {
-      var payload = scope.question;
-      Requests.put('questions/' + payload.id, payload, function(data) {
-        scope.question = data.success.data;
-      });
-    }
-
-    scope.view = function view(question) {
-      scope.currentQuestion = question;
-      state.go('questions.view')
-    }
-  }
-])
-
-angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
-
-  $stateProvider.state('login', {
-    url: '/login',
-    views: {
-      '': {
-        controller: 'usersCtrl',
-        templateUrl: VIEW._modules('users/users.login')
-      }
-    }
-  })
-});
-
 angular.module('retsu.patients',[]).controller('patientsCtrl', ['$scope', 'Requests',
   '$state','$rootScope',
   function(scope, Requests, state, rootScope) {
@@ -907,6 +845,67 @@ angular.module('retsu.patients').config(function($stateProvider, $urlRouterProvi
       },
       'patients.list@admin.patients.dashboard':{
         templateUrl: VIEW._modules('patients/patients.list')
+      }
+    }
+  })
+});
+
+angular.module('retsu.users',[]).controller('usersCtrl', ['$scope', 'Requests',
+  '$state',
+  function(scope, Requests, state) {
+    scope.user = {};
+
+    scope.filterOptions = ['Date', 'Tags'];
+
+    function get() {
+      var payload = {};
+      Requests.get('questions', payload, function(data) {
+        scope.questions = data.success.data;
+      });
+    }
+
+    scope.add = function add() {
+      var payload = scope.question;
+      Requests.post('questions', payload, function(data) {
+        if(data.success){
+          state.go('admin.questions.list')
+        }
+      });
+    }
+
+    scope.login = function login() {
+      var payload = scope.user;
+      Requests.post('auth', payload, function(data) {
+        if(data.success){
+          scope.user = data.user;
+          state.go('admin.questions.dashboard')
+        }
+
+      });
+    }
+
+    scope.edit = function edit() {
+      var payload = scope.question;
+      Requests.put('questions/' + payload.id, payload, function(data) {
+        scope.question = data.success.data;
+      });
+    }
+
+    scope.view = function view(question) {
+      scope.currentQuestion = question;
+      state.go('questions.view')
+    }
+  }
+])
+
+angular.module('retsu.users').config(function($stateProvider, $urlRouterProvider) {
+
+  $stateProvider.state('login', {
+    url: '/login',
+    views: {
+      '': {
+        controller: 'usersCtrl',
+        templateUrl: VIEW._modules('users/users.login')
       }
     }
   })

@@ -116,4 +116,4 @@ gulp.task('templates', function() {
   })
 
   // Default Task
-  gulp.task('default', ['templates', 'bower', 'move_fonts','scripts','sass']);
+  gulp.task('default', ['templates', 'bower','scripts','sass']);
