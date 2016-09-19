@@ -69,7 +69,7 @@ function get_patients(waterfallCallback){
 
 // ### Get Patient
 function get_patient(patients,callback){
-// We use `async.map()` to iterate through the Patients `Array`
+  // We use `async.map()` to iterate through the Patients `Array`
   async.map(patients, function(patientId, callback) {
     // Request for each patient's  study information
     request(orthanc + 'patients/' + patientId + '/studies',function(err, response, body){
@@ -129,13 +129,25 @@ function get_patient(patients,callback){
     // Patient ID `int`
     obj.id = patient[0].ID;
     // Patient Name `string`
-    obj.patient_name = patient[0].PatientMainDicomTags.PatientName.split('^').join(' ');
+    obj.patient_name = patient[0].PatientMainDicomTags.PatientName
+                              .split('^')
+                              .join(' ');
     // Institution name `string`
-    obj.institution_name = (patient[0].MainDicomTags.InstitutionName)?patient[0].MainDicomTags.InstitutionName.split('^').join(' '): ' ';
+    obj.institution_name = (patient[0].MainDicomTags.InstitutionName)
+                            ? patient[0].MainDicomTags.InstitutionName
+                              .split('^')
+                              .join(' ')
+                              : ' ';
     // Requesting Physician `string`
-    obj.requesting_physician = (patient[0].MainDicomTags.RequestingPhysician)? patient[0].MainDicomTags.RequestingPhysician.split('^').join(' '): ' ';
+    obj.requesting_physician = (patient[0].MainDicomTags.RequestingPhysician)
+                            ? patient[0].MainDicomTags.RequestingPhysician
+                              .split('^')
+                              .join(' ')
+                              : ' ';
     // Study Description `string`
-    obj.study_description = patient[0].MainDicomTags.StudyDescription.split('^').join(' ');
+    obj.study_description = patient[0].MainDicomTags.StudyDescription
+                              .split('^')
+                              .join(' ');
     // Last Update `date`
     obj.last_update = patient[0].PatientMainDicomTags.LastUpdate;
     // Series Count `int`
