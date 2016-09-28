@@ -8,12 +8,6 @@ var bodyParser = require('body-parser');
 var app = express();
 var assets = require('connect-assets');
 
-var Changelog = require('generate-changelog');
-var Fs        = require('fs');
-
-
-
-
 app.use(assets({
   paths: [
     'public/libs/js',
@@ -89,8 +83,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-Changelog.generate({ patch: true, repoUrl: 'https://gitlab.com/rufusmbugua/dicom-image-parser' })
-.then(function (changelog) {
-  Fs.writeFileSync('./CHANGELOG.md', changelog);
-});
