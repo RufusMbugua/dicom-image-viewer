@@ -1,0 +1,7 @@
+dicom:
+  image: bitnami/node
+  command: npm start
+  volumes:
+    - .:/app
+  ports:
+    - 8010:3000
