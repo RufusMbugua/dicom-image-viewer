@@ -1,4 +1,5 @@
 dicom:
+  container_name: dicom
   image: bitnami/node
   command: npm start
   volumes:
